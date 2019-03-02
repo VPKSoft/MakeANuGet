@@ -1,4 +1,4 @@
-# MageANuGet
+# MakeANuGet
 A very simple and limited NuGet creation software.
 
 ## Features
