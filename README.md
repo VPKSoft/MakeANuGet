@@ -10,7 +10,7 @@ A very simple and limited NuGet creation software.
 * You will need a Visual Studio Community 2017 edition (+) and the [nuget.exe](https://www.nuget.org/downloads) placed on the project directory.
 
 ## Contributing
-Please do contribute if you wish to add new features - the existing feature set is enough for me.
+* Please do contribute if you wish to add new features - the existing feature set is enough for me.
 
 ## Screenshot
 ![Screenshot 1](https://www.vpksoft.net/images/screenshots/MakeANuGet/make_a_nuget_1.png)
