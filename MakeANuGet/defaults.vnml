@@ -1,0 +1,8 @@
+-- VNml v.1.0. --
+defaults
+	copyright=[Copyright © VPKSoft 2018]
+	tags=[VPKSoft]
+	licenseUrl=[https://www.gnu.org/licenses/lgpl.txt]
+	iconUrl=[https://www.vpksoft.net/site/VPKSoft.ico]
+	requireLicenseAcceptance=[True]
+	
