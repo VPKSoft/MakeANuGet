@@ -2,7 +2,7 @@
 A very simple and limited NuGet creation software.
 
 ## Features
-* Supports the new [SPDX](https://spdx.org/licenses/) license with the nuget packages. The support is however limited limited with OR [expressions](https://spdx.org/spdx-specification-21-web-version#h.jxpfx0ykyb60) only.
+* Supports the new [SPDX](https://spdx.org/licenses/) license with the nuget packages. The support is however limited with OR [expressions](https://spdx.org/spdx-specification-21-web-version#h.jxpfx0ykyb60) only.
 * Generates a .nuspec file, generates NuGet packages and can push them to the nuget.org.
 * Support for embedded file license.
 * Possibility to ask the nuget.exe to update it self.
