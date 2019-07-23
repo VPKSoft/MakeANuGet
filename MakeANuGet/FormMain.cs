@@ -496,11 +496,14 @@ namespace MakeANuGet
                     {
                         // if a deprecated node containing the license URL is found
                         // add it to a removal variable if not defined..
-                        if (tbLicenseUrl.Text != string.Empty)
+                        if (tbLicenseUrl.Text == string.Empty)
                         {
                             nodeLicenseUrl = node;
                         }
-                        node.InnerText = tbLicenseUrl.Text; // value found so save it..
+                        else
+                        {
+                            node.InnerText = tbLicenseUrl.Text; // value found so save it..
+                        }
                     }
                     else if (node.Name == "projectUrl") // value found so save it..
                     {
@@ -967,7 +970,7 @@ namespace MakeANuGet
             bool returnValue = false;
 
             // first check there is everything in place..
-            if (csprojFile != null && csprojFile != string.Empty)
+            if (!string.IsNullOrEmpty(csprojFile))
             {
                 // assume success..
                 returnValue = true;
@@ -1000,17 +1003,17 @@ namespace MakeANuGet
                 process.StartInfo.RedirectStandardError = true;
 
                 // subscribe to the process events with anonymous event handlers..
-                process.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
+                process.OutputDataReceived += (sender, e) =>
                 {
                     // append new line endings to the each output string..
-                    if (!String.IsNullOrEmpty(e.Data))
+                    if (!string.IsNullOrEmpty(e.Data))
                     {
                         // invocation is required (another process)..
                         Invoke(new MethodInvoker(delegate { tbProcessOutput.AppendText(e.Data + Environment.NewLine); }));
                     }
-                });
+                };
 
-                process.ErrorDataReceived += new DataReceivedEventHandler((sender, e) =>
+                process.ErrorDataReceived += (sender, e) =>
                 {
                     // append new line endings to the each output string..
                     if (!String.IsNullOrEmpty(e.Data))
@@ -1018,7 +1021,7 @@ namespace MakeANuGet
                         // invocation is required (another process)..
                         Invoke(new MethodInvoker(delegate { tbProcessOutput.AppendText(e.Data + Environment.NewLine); }));
                     }
-                });
+                };
 
                 // start the process after "hefty" initialization..
                 process.Start();
