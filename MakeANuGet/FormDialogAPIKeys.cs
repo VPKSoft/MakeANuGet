@@ -33,12 +33,12 @@ namespace MakeANuGet
     /// A dialog for saving or changing your NuGet API keys.
     /// </summary>
     /// <seealso cref="System.Windows.Forms.Form" />
-    public partial class FormDialogAPIKeys : Form
+    public partial class FormDialogApiKeys : Form
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FormDialogAPIKeys"/> class.
+        /// Initializes a new instance of the <see cref="FormDialogApiKeys"/> class.
         /// </summary>
-        public FormDialogAPIKeys()
+        public FormDialogApiKeys()
         {
             InitializeComponent();
         }
@@ -51,17 +51,18 @@ namespace MakeANuGet
         public static void Execute(ref string apiKey, ref string apiTestKey)
         {
             // create an instance of this class..
-            FormDialogAPIKeys formDialogAPIKeys = new FormDialogAPIKeys();
+            FormDialogApiKeys formDialogApiKeys = new FormDialogApiKeys
+            {
+                tbNuGetAPIKey = {Text = apiKey}, tbTestNuGetAPIKey = {Text = apiTestKey}
+            };
 
             // set the API keys..
-            formDialogAPIKeys.tbNuGetAPIKey.Text = apiKey;
-            formDialogAPIKeys.tbTestNuGetAPIKey.Text = apiTestKey;
 
             // if the user accepted, save the given API keys..
-            if (formDialogAPIKeys.ShowDialog() == DialogResult.OK)
+            if (formDialogApiKeys.ShowDialog() == DialogResult.OK)
             {
-                apiKey = formDialogAPIKeys.tbNuGetAPIKey.Text;
-                apiTestKey = formDialogAPIKeys.tbTestNuGetAPIKey.Text;
+                apiKey = formDialogApiKeys.tbNuGetAPIKey.Text;
+                apiTestKey = formDialogApiKeys.tbTestNuGetAPIKey.Text;
             }
         }
 

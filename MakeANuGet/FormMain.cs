@@ -45,7 +45,7 @@ namespace MakeANuGet
     public partial class FormMain : Form
     {
         // use the self developed "not a markup language"..
-        private VPKNml vnml = null;
+        private VPKNml vnml;
 
         // the settings path (%LOCALAPPDATA%\MakeANuGet)
         private string settingsPath;
@@ -60,25 +60,37 @@ namespace MakeANuGet
         private string nuspecFile;
 
         // the .nuspec file is a XML document..
-        XmlDocument nuspec;
+        private XmlDocument nuspec;
 
         // a binary path for the release folder of your library..
-        string binaryPath;
+        private string binaryPath;
 
         // an assembly name for your library..
-        string assemblyName;
+        private string assemblyName;
 
         // the assembly which from which to NuGet package is to be created..
-        Assembly assemblyNuget;
+        private Assembly assemblyNuget;
 
         // your nuget.org API key
-        string apiKey;
+        private string apiKey;
 
         // your apiint.nugettest.org API key
-        string testApiKey;
+        private string testApiKey;
 
         // a path to the common settings .vnml file..
-        string vmmlPath;
+        private string vmmlPath;
+
+        // a password for a certificate file to sign the nuget package..
+        private string certificatePassword;
+
+        // an URL for the certificate time stamp server..
+        private string certificateTimeStampServer;
+
+        // the certificate file to be used for signing the nuget package..
+        private string certificateFile;
+
+        // a value indicating whether to sign the nuget package with a certificate
+        private bool signPackage;
 
         /// <summary>
         /// The main form for the software.
@@ -99,6 +111,14 @@ namespace MakeANuGet
             apiKey = vnml["api", "key", ""].ToString();
 
             testApiKey = vnml["apitest", "key", ""].ToString();
+
+            certificatePassword = vnml["certificate", "password", ""].ToString();
+
+            certificateFile = vnml["certificate", "file", ""].ToString();
+
+            certificateTimeStampServer = vnml["certificate", "timeStampServer", ""].ToString();
+
+            signPackage = bool.Parse(vnml["certificate", "use", false].ToString());
 
             // set the API key to the text box..
             tbApiKey.Text = cbTestNuGet.Checked ? testApiKey : apiKey;
@@ -810,6 +830,13 @@ namespace MakeANuGet
         {
             vnml["api", "key"] = apiKey; // the NuGet API key..
             vnml["apitest", "key"] = testApiKey; // the test NuGet API key..
+
+            // the certificate settings..
+            vnml["certificate", "password"] = certificatePassword;
+            vnml["certificate", "file"] = certificateFile;
+            vnml["certificate", "timeStampServer"] = certificateTimeStampServer;
+            vnml["certificate", "use"] = signPackage;
+
             vnml.Save(settingsFile);
 
             // the assembly copyright..
@@ -844,12 +871,15 @@ namespace MakeANuGet
                 {
                     // if successful, enable the push NuGet button..
                     btPushNugetPackage.Enabled = true;
+
+                    // sign the package if set..
+                    SignPackage();
                 }
             }
         }
 
-        // a user wishes to push the NuGet package to nuget.org (https://www.nuget.org)..
-        private void btPushNugetPackage_Click(object sender, EventArgs e)
+        // gets the path to the generated .nupkg file..
+        private string GetNugetFile()
         {
             // enumerate the files in the directory where the .csproj file resides..
             string[] nupkgs = Directory.GetFiles(Path.GetDirectoryName(csprojFile), "*.nupkg");
@@ -867,7 +897,13 @@ namespace MakeANuGet
             nupkgsInfo = nupkgsInfo.OrderBy(f => f.LastWriteTime).ToList();
 
             // pick the newest file..
-            string np = Path.GetFileName(nupkgsInfo.Last().Name);
+            return Path.GetFileName(nupkgsInfo.Last().Name);
+        }
+
+        // a user wishes to push the NuGet package to nuget.org (https://www.nuget.org)..
+        private void btPushNugetPackage_Click(object sender, EventArgs e)
+        {
+            string np = GetNugetFile();
 
             // push the NuGet package to nuget.org (https://int.nugettest.org) (NOTE: For testing!)..
             if (cbTestNuGet.Checked)
@@ -958,6 +994,95 @@ namespace MakeANuGet
                 // dispose of the process..
             }
         }
+
+        /// <summary>
+        /// Signs the nuget package with a code signing certificate.
+        /// </summary>
+        private void SignPackage()
+        {
+            if (!signPackage)
+            {
+                return;
+            }
+
+            string processPath = Path.Combine(VPKSoft.Utils.Paths.AppInstallDir, "nuget.exe");
+
+            //nuget.exe sign "C:\Path\To\Generated\NuGet\Package\package.1.0.0.0.nupkg" -CertificatePath "C:\Path\To\Certificate\File.pfx" -Timestamper http://some.timestamp.com -CertificatePassword "xxxxxxxx"
+
+            var package = GetNugetFile();
+
+            // the output from the nuget.exe is piped to the lower black text box..
+            // ReSharper disable once StringLiteralTypo
+            tbProcessOutput.AppendText("> " + processPath + $" sign \"{package}\" -CertificatePath \"{certificateFile}\" -Timestamper {certificateTimeStampServer} -CertificatePassword \"{new string('•', certificatePassword.Length)}\" " + Environment.NewLine);
+
+            // create a process..
+            Process process = new Process();
+
+            // give it the process file name..
+            process.StartInfo.FileName = processPath;
+
+            // give the process it's arguments..
+            process.StartInfo.Arguments = $"sign \"{package}\" -CertificatePath \"{certificateFile}\" -Timestamper {certificateTimeStampServer} -CertificatePassword \"{certificatePassword}\"";
+
+            // no shell execution..
+            process.StartInfo.UseShellExecute = false;
+
+            // no exclusive window..
+            process.StartInfo.CreateNoWindow = true;
+
+            // set the working directory to the same as the .csproj file location..
+            process.StartInfo.WorkingDirectory = Path.GetDirectoryName(csprojFile);
+
+            // redirect the process output(s)..
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+
+            // subscribe to the process events with anonymous event handlers..
+            process.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
+            {
+                // append new line endings to the each output string..
+                if (!String.IsNullOrEmpty(e.Data))
+                {
+                    // invocation is required (another process)..
+                    Invoke(new MethodInvoker(delegate { tbProcessOutput.AppendText(e.Data + Environment.NewLine); }));
+                }
+            });
+
+            process.ErrorDataReceived += new DataReceivedEventHandler((sender, e) =>
+            {
+                // append new line endings to the each output string..
+                if (!String.IsNullOrEmpty(e.Data))
+                {
+                    // invocation is required (another process)..
+                    Invoke(new MethodInvoker(delegate { tbProcessOutput.AppendText(e.Data + Environment.NewLine); }));
+                }
+            });
+
+            // start the process after "hefty" initialization..
+            process.Start();
+
+            // asynchronously read the standard output of the spawned process. 
+            // This raises OutputDataReceived events for each line of output.
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+
+            // wait for the process to exit while "pumping" the software to be "responsive"..
+            while (!process.HasExited)
+            {
+                Application.DoEvents();
+                Thread.Sleep(100);
+            }
+            Application.DoEvents();
+
+            // empty line to the output..
+            tbProcessOutput.AppendText(Environment.NewLine);
+
+            using (process)
+            {
+                // dispose of the process..
+            }
+        }
+
 
         /// <summary>
         /// Tries to push a generated NuGet package to nuget.org (https://www.nuget.org).
@@ -1174,7 +1299,7 @@ namespace MakeANuGet
         // a user wishes to enter the NuGet API keys..
         private void mnuEnterAPIKeys_Click(object sender, EventArgs e)
         {
-            FormDialogAPIKeys.Execute(ref apiKey, ref testApiKey);
+            FormDialogApiKeys.Execute(ref apiKey, ref testApiKey);
         }
 
         // a user toggles the test NuGet check box..
@@ -1189,6 +1314,37 @@ namespace MakeANuGet
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new VPKSoft.About.FormAbout(this, "MIT", "https://github.com/VPKSoft/MageANuGet/blob/master/LICENSE");
+        }
+
+        // shows the detail dialog for the code signing certificate settings..
+        private void MnuCertificateSettings_Click(object sender, EventArgs e)
+        {
+            new FormDialogCertificate().ShowDialog(ref certificatePassword, ref certificateTimeStampServer,
+                ref certificateFile);
+        }
+
+        // the user wishes to change, add or update the certificate settings..
+        private void CbUseCodeSigningCertificate_CheckedChanged(object sender, EventArgs e)
+        {
+            var checkBox = (CheckBox) sender;
+
+            if (checkBox.Checked)
+            {
+                if (certificatePassword == string.Empty || certificateFile == string.Empty ||
+                    certificateTimeStampServer == string.Empty)
+                {
+                    new FormDialogCertificate().ShowDialog(ref certificatePassword, ref certificateTimeStampServer,
+                        ref certificateFile);
+
+                    if (certificatePassword == string.Empty || certificateFile == string.Empty ||
+                        certificateTimeStampServer == string.Empty)
+                    {
+                        checkBox.Checked = false;
+                    }
+                }
+            }
+
+            signPackage = checkBox.Checked;
         }
         #endregion
     }

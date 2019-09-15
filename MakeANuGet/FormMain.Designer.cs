@@ -33,9 +33,16 @@
             this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOpenProject = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuFillWithDefaults = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuUpdateNuGetEXE = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuEnterAPIKeys = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCertificateSettings = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.odCSProj = new System.Windows.Forms.OpenFileDialog();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpUseCodeSigningCertificate = new System.Windows.Forms.TableLayoutPanel();
+            this.lbUseCodeSigningCertificate = new System.Windows.Forms.Label();
+            this.cbUseCodeSigningCertificate = new System.Windows.Forms.CheckBox();
+            this.tlpLicenseFileOrType = new System.Windows.Forms.TableLayoutPanel();
             this.lbLicenseFileOrType = new System.Windows.Forms.Label();
             this.tbLicenseFile = new System.Windows.Forms.TextBox();
             this.btLicenseFile = new System.Windows.Forms.Button();
@@ -70,24 +77,22 @@
             this.lbApiKey = new System.Windows.Forms.Label();
             this.tbApiKey = new System.Windows.Forms.TextBox();
             this.tlpNuGetSteps = new System.Windows.Forms.TableLayoutPanel();
+            this.pnNO1 = new System.Windows.Forms.Panel();
+            this.pnNO2 = new System.Windows.Forms.Panel();
+            this.pnNO3 = new System.Windows.Forms.Panel();
             this.btGenerateNuget = new System.Windows.Forms.Button();
             this.btGenerateNugetPackage = new System.Windows.Forms.Button();
             this.btPushNugetPackage = new System.Windows.Forms.Button();
             this.cbForceNuspec = new System.Windows.Forms.CheckBox();
+            this.cbTestNuGet = new System.Windows.Forms.CheckBox();
             this.tlpProcessOutput = new System.Windows.Forms.TableLayoutPanel();
             this.lbProcessOutput = new System.Windows.Forms.Label();
             this.tbProcessOutput = new System.Windows.Forms.TextBox();
             this.odAnyFile = new System.Windows.Forms.OpenFileDialog();
-            this.cbTestNuGet = new System.Windows.Forms.CheckBox();
-            this.mnuUpdateNuGetEXE = new System.Windows.Forms.ToolStripMenuItem();
-            this.pnNO1 = new System.Windows.Forms.Panel();
-            this.pnNO2 = new System.Windows.Forms.Panel();
-            this.pnNO3 = new System.Windows.Forms.Panel();
-            this.mnuEnterAPIKeys = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMain.SuspendLayout();
             this.tlpMain.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpUseCodeSigningCertificate.SuspendLayout();
+            this.tlpLicenseFileOrType.SuspendLayout();
             this.tlpRequireLicenseAcceptance.SuspendLayout();
             this.tlpDescription.SuspendLayout();
             this.tlpCopyright.SuspendLayout();
@@ -118,7 +123,8 @@
             this.mnuOpenProject,
             this.mnuFillWithDefaults,
             this.mnuUpdateNuGetEXE,
-            this.mnuEnterAPIKeys});
+            this.mnuEnterAPIKeys,
+            this.mnuCertificateSettings});
             this.mnuFile.Name = "mnuFile";
             this.mnuFile.Size = new System.Drawing.Size(37, 20);
             this.mnuFile.Text = "File";
@@ -126,7 +132,7 @@
             // mnuOpenProject
             // 
             this.mnuOpenProject.Name = "mnuOpenProject";
-            this.mnuOpenProject.Size = new System.Drawing.Size(180, 22);
+            this.mnuOpenProject.Size = new System.Drawing.Size(172, 22);
             this.mnuOpenProject.Text = "Open Project";
             this.mnuOpenProject.Click += new System.EventHandler(this.mnuOpenProject_Click);
             // 
@@ -134,9 +140,37 @@
             // 
             this.mnuFillWithDefaults.Enabled = false;
             this.mnuFillWithDefaults.Name = "mnuFillWithDefaults";
-            this.mnuFillWithDefaults.Size = new System.Drawing.Size(180, 22);
+            this.mnuFillWithDefaults.Size = new System.Drawing.Size(172, 22);
             this.mnuFillWithDefaults.Text = "Fill with defaults";
             this.mnuFillWithDefaults.Click += new System.EventHandler(this.mnuFillWithDefaults_Click);
+            // 
+            // mnuUpdateNuGetEXE
+            // 
+            this.mnuUpdateNuGetEXE.Name = "mnuUpdateNuGetEXE";
+            this.mnuUpdateNuGetEXE.Size = new System.Drawing.Size(172, 22);
+            this.mnuUpdateNuGetEXE.Text = "Update nuget.exe";
+            this.mnuUpdateNuGetEXE.Click += new System.EventHandler(this.mnuUpdateNuGetEXE_Click);
+            // 
+            // mnuEnterAPIKeys
+            // 
+            this.mnuEnterAPIKeys.Name = "mnuEnterAPIKeys";
+            this.mnuEnterAPIKeys.Size = new System.Drawing.Size(172, 22);
+            this.mnuEnterAPIKeys.Text = "Enter API key(s)";
+            this.mnuEnterAPIKeys.Click += new System.EventHandler(this.mnuEnterAPIKeys_Click);
+            // 
+            // mnuCertificateSettings
+            // 
+            this.mnuCertificateSettings.Name = "mnuCertificateSettings";
+            this.mnuCertificateSettings.Size = new System.Drawing.Size(172, 22);
+            this.mnuCertificateSettings.Text = "Certificate settings";
+            this.mnuCertificateSettings.Click += new System.EventHandler(this.MnuCertificateSettings_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // odCSProj
             // 
@@ -151,7 +185,8 @@
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMain.Controls.Add(this.tableLayoutPanel1, 0, 3);
+            this.tlpMain.Controls.Add(this.tlpUseCodeSigningCertificate, 0, 13);
+            this.tlpMain.Controls.Add(this.tlpLicenseFileOrType, 0, 3);
             this.tlpMain.Controls.Add(this.tlpRequireLicenseAcceptance, 0, 10);
             this.tlpMain.Controls.Add(this.tlpDescription, 0, 9);
             this.tlpMain.Controls.Add(this.tlpCopyright, 0, 8);
@@ -162,10 +197,11 @@
             this.tlpMain.Controls.Add(this.tlpTags, 0, 2);
             this.tlpMain.Controls.Add(this.tlpApiKey, 0, 0);
             this.tlpMain.Controls.Add(this.tlpNuGetSteps, 0, 1);
-            this.tlpMain.Controls.Add(this.tlpProcessOutput, 0, 13);
+            this.tlpMain.Controls.Add(this.tlpProcessOutput, 0, 14);
             this.tlpMain.Location = new System.Drawing.Point(12, 27);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 14;
+            this.tlpMain.RowCount = 15;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -183,29 +219,67 @@
             this.tlpMain.Size = new System.Drawing.Size(949, 697);
             this.tlpMain.TabIndex = 2;
             // 
-            // tableLayoutPanel1
+            // tlpUseCodeSigningCertificate
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tlpUseCodeSigningCertificate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 5;
-            this.tlpMain.SetColumnSpan(this.tableLayoutPanel1, 2);
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.tableLayoutPanel1.Controls.Add(this.lbLicenseFileOrType, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.tbLicenseFile, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btLicenseFile, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btSelectLicenseByType, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btAddLicenseByType, 4, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 109);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(943, 29);
-            this.tableLayoutPanel1.TabIndex = 11;
+            this.tlpUseCodeSigningCertificate.AutoSize = true;
+            this.tlpUseCodeSigningCertificate.ColumnCount = 2;
+            this.tlpMain.SetColumnSpan(this.tlpUseCodeSigningCertificate, 2);
+            this.tlpUseCodeSigningCertificate.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tlpUseCodeSigningCertificate.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.tlpUseCodeSigningCertificate.Controls.Add(this.lbUseCodeSigningCertificate, 0, 0);
+            this.tlpUseCodeSigningCertificate.Controls.Add(this.cbUseCodeSigningCertificate, 1, 0);
+            this.tlpUseCodeSigningCertificate.Location = new System.Drawing.Point(3, 365);
+            this.tlpUseCodeSigningCertificate.Name = "tlpUseCodeSigningCertificate";
+            this.tlpUseCodeSigningCertificate.RowCount = 1;
+            this.tlpUseCodeSigningCertificate.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpUseCodeSigningCertificate.Size = new System.Drawing.Size(943, 20);
+            this.tlpUseCodeSigningCertificate.TabIndex = 12;
+            // 
+            // lbUseCodeSigningCertificate
+            // 
+            this.lbUseCodeSigningCertificate.AutoSize = true;
+            this.lbUseCodeSigningCertificate.Location = new System.Drawing.Point(3, 0);
+            this.lbUseCodeSigningCertificate.Name = "lbUseCodeSigningCertificate";
+            this.lbUseCodeSigningCertificate.Size = new System.Drawing.Size(141, 13);
+            this.lbUseCodeSigningCertificate.TabIndex = 0;
+            this.lbUseCodeSigningCertificate.Text = "Use code signing certificate:";
+            this.lbUseCodeSigningCertificate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // cbUseCodeSigningCertificate
+            // 
+            this.cbUseCodeSigningCertificate.AutoSize = true;
+            this.cbUseCodeSigningCertificate.Location = new System.Drawing.Point(285, 3);
+            this.cbUseCodeSigningCertificate.Name = "cbUseCodeSigningCertificate";
+            this.cbUseCodeSigningCertificate.Size = new System.Drawing.Size(15, 14);
+            this.cbUseCodeSigningCertificate.TabIndex = 1;
+            this.cbUseCodeSigningCertificate.UseVisualStyleBackColor = true;
+            this.cbUseCodeSigningCertificate.CheckedChanged += new System.EventHandler(this.CbUseCodeSigningCertificate_CheckedChanged);
+            // 
+            // tlpLicenseFileOrType
+            // 
+            this.tlpLicenseFileOrType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpLicenseFileOrType.AutoSize = true;
+            this.tlpLicenseFileOrType.ColumnCount = 5;
+            this.tlpMain.SetColumnSpan(this.tlpLicenseFileOrType, 2);
+            this.tlpLicenseFileOrType.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tlpLicenseFileOrType.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
+            this.tlpLicenseFileOrType.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tlpLicenseFileOrType.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tlpLicenseFileOrType.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tlpLicenseFileOrType.Controls.Add(this.lbLicenseFileOrType, 0, 0);
+            this.tlpLicenseFileOrType.Controls.Add(this.tbLicenseFile, 1, 0);
+            this.tlpLicenseFileOrType.Controls.Add(this.btLicenseFile, 2, 0);
+            this.tlpLicenseFileOrType.Controls.Add(this.btSelectLicenseByType, 3, 0);
+            this.tlpLicenseFileOrType.Controls.Add(this.btAddLicenseByType, 4, 0);
+            this.tlpLicenseFileOrType.Location = new System.Drawing.Point(3, 109);
+            this.tlpLicenseFileOrType.Name = "tlpLicenseFileOrType";
+            this.tlpLicenseFileOrType.RowCount = 1;
+            this.tlpLicenseFileOrType.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpLicenseFileOrType.Size = new System.Drawing.Size(943, 29);
+            this.tlpLicenseFileOrType.TabIndex = 11;
             // 
             // lbLicenseFileOrType
             // 
@@ -636,6 +710,33 @@
             this.tlpNuGetSteps.Size = new System.Drawing.Size(943, 36);
             this.tlpNuGetSteps.TabIndex = 2;
             // 
+            // pnNO1
+            // 
+            this.pnNO1.BackgroundImage = global::MakeANuGet.Properties.Resources.no_1;
+            this.pnNO1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pnNO1.Location = new System.Drawing.Point(3, 3);
+            this.pnNO1.Name = "pnNO1";
+            this.pnNO1.Size = new System.Drawing.Size(30, 30);
+            this.pnNO1.TabIndex = 0;
+            // 
+            // pnNO2
+            // 
+            this.pnNO2.BackgroundImage = global::MakeANuGet.Properties.Resources.no_2;
+            this.pnNO2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pnNO2.Location = new System.Drawing.Point(172, 3);
+            this.pnNO2.Name = "pnNO2";
+            this.pnNO2.Size = new System.Drawing.Size(30, 30);
+            this.pnNO2.TabIndex = 1;
+            // 
+            // pnNO3
+            // 
+            this.pnNO3.BackgroundImage = global::MakeANuGet.Properties.Resources.no_3;
+            this.pnNO3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pnNO3.Location = new System.Drawing.Point(405, 3);
+            this.pnNO3.Name = "pnNO3";
+            this.pnNO3.Size = new System.Drawing.Size(30, 30);
+            this.pnNO3.TabIndex = 2;
+            // 
             // btGenerateNuget
             // 
             this.btGenerateNuget.AutoSize = true;
@@ -683,6 +784,17 @@
             this.cbForceNuspec.Text = "Force nuspec regenration";
             this.cbForceNuspec.UseVisualStyleBackColor = true;
             // 
+            // cbTestNuGet
+            // 
+            this.cbTestNuGet.AutoSize = true;
+            this.cbTestNuGet.Location = new System.Drawing.Point(795, 3);
+            this.cbTestNuGet.Name = "cbTestNuGet";
+            this.cbTestNuGet.Size = new System.Drawing.Size(99, 17);
+            this.cbTestNuGet.TabIndex = 7;
+            this.cbTestNuGet.Text = "Test the NuGet";
+            this.cbTestNuGet.UseVisualStyleBackColor = true;
+            this.cbTestNuGet.CheckedChanged += new System.EventHandler(this.cbTestNuGet_CheckedChanged);
+            // 
             // tlpProcessOutput
             // 
             this.tlpProcessOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -693,12 +805,12 @@
             this.tlpProcessOutput.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpProcessOutput.Controls.Add(this.lbProcessOutput, 0, 0);
             this.tlpProcessOutput.Controls.Add(this.tbProcessOutput, 0, 1);
-            this.tlpProcessOutput.Location = new System.Drawing.Point(3, 365);
+            this.tlpProcessOutput.Location = new System.Drawing.Point(3, 391);
             this.tlpProcessOutput.Name = "tlpProcessOutput";
             this.tlpProcessOutput.RowCount = 2;
             this.tlpProcessOutput.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpProcessOutput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpProcessOutput.Size = new System.Drawing.Size(943, 329);
+            this.tlpProcessOutput.Size = new System.Drawing.Size(943, 303);
             this.tlpProcessOutput.TabIndex = 3;
             // 
             // lbProcessOutput
@@ -722,71 +834,12 @@
             this.tbProcessOutput.Multiline = true;
             this.tbProcessOutput.Name = "tbProcessOutput";
             this.tbProcessOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbProcessOutput.Size = new System.Drawing.Size(937, 310);
+            this.tbProcessOutput.Size = new System.Drawing.Size(937, 284);
             this.tbProcessOutput.TabIndex = 1;
             // 
             // odAnyFile
             // 
             this.odAnyFile.Filter = "All files|*.*";
-            // 
-            // cbTestNuGet
-            // 
-            this.cbTestNuGet.AutoSize = true;
-            this.cbTestNuGet.Location = new System.Drawing.Point(795, 3);
-            this.cbTestNuGet.Name = "cbTestNuGet";
-            this.cbTestNuGet.Size = new System.Drawing.Size(99, 17);
-            this.cbTestNuGet.TabIndex = 7;
-            this.cbTestNuGet.Text = "Test the NuGet";
-            this.cbTestNuGet.UseVisualStyleBackColor = true;
-            this.cbTestNuGet.CheckedChanged += new System.EventHandler(this.cbTestNuGet_CheckedChanged);
-            // 
-            // mnuUpdateNuGetEXE
-            // 
-            this.mnuUpdateNuGetEXE.Name = "mnuUpdateNuGetEXE";
-            this.mnuUpdateNuGetEXE.Size = new System.Drawing.Size(180, 22);
-            this.mnuUpdateNuGetEXE.Text = "Update nuget.exe";
-            this.mnuUpdateNuGetEXE.Click += new System.EventHandler(this.mnuUpdateNuGetEXE_Click);
-            // 
-            // pnNO1
-            // 
-            this.pnNO1.BackgroundImage = global::MakeANuGet.Properties.Resources.no_1;
-            this.pnNO1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pnNO1.Location = new System.Drawing.Point(3, 3);
-            this.pnNO1.Name = "pnNO1";
-            this.pnNO1.Size = new System.Drawing.Size(30, 30);
-            this.pnNO1.TabIndex = 0;
-            // 
-            // pnNO2
-            // 
-            this.pnNO2.BackgroundImage = global::MakeANuGet.Properties.Resources.no_2;
-            this.pnNO2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pnNO2.Location = new System.Drawing.Point(172, 3);
-            this.pnNO2.Name = "pnNO2";
-            this.pnNO2.Size = new System.Drawing.Size(30, 30);
-            this.pnNO2.TabIndex = 1;
-            // 
-            // pnNO3
-            // 
-            this.pnNO3.BackgroundImage = global::MakeANuGet.Properties.Resources.no_3;
-            this.pnNO3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pnNO3.Location = new System.Drawing.Point(405, 3);
-            this.pnNO3.Name = "pnNO3";
-            this.pnNO3.Size = new System.Drawing.Size(30, 30);
-            this.pnNO3.TabIndex = 2;
-            // 
-            // mnuEnterAPIKeys
-            // 
-            this.mnuEnterAPIKeys.Name = "mnuEnterAPIKeys";
-            this.mnuEnterAPIKeys.Size = new System.Drawing.Size(180, 22);
-            this.mnuEnterAPIKeys.Text = "Enter API key(s)";
-            this.mnuEnterAPIKeys.Click += new System.EventHandler(this.mnuEnterAPIKeys_Click);
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -804,8 +857,10 @@
             this.mnuMain.PerformLayout();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpUseCodeSigningCertificate.ResumeLayout(false);
+            this.tlpUseCodeSigningCertificate.PerformLayout();
+            this.tlpLicenseFileOrType.ResumeLayout(false);
+            this.tlpLicenseFileOrType.PerformLayout();
             this.tlpRequireLicenseAcceptance.ResumeLayout(false);
             this.tlpRequireLicenseAcceptance.PerformLayout();
             this.tlpDescription.ResumeLayout(false);
@@ -879,7 +934,7 @@
         private System.Windows.Forms.Label lbCopyright;
         private System.Windows.Forms.TextBox tbCopyright;
         private System.Windows.Forms.ToolStripMenuItem mnuFillWithDefaults;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlpLicenseFileOrType;
         private System.Windows.Forms.Label lbLicenseFileOrType;
         private System.Windows.Forms.TextBox tbLicenseFile;
         private System.Windows.Forms.Button btLicenseFile;
@@ -891,6 +946,10 @@
         private System.Windows.Forms.ToolStripMenuItem mnuUpdateNuGetEXE;
         private System.Windows.Forms.ToolStripMenuItem mnuEnterAPIKeys;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuCertificateSettings;
+        private System.Windows.Forms.TableLayoutPanel tlpUseCodeSigningCertificate;
+        private System.Windows.Forms.Label lbUseCodeSigningCertificate;
+        private System.Windows.Forms.CheckBox cbUseCodeSigningCertificate;
     }
 }
 

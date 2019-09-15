@@ -1,6 +1,6 @@
 ﻿namespace MakeANuGet
 {
-    partial class FormDialogAPIKeys
+    partial class FormDialogApiKeys
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormDialogAPIKeys));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormDialogApiKeys));
             this.btCancel = new System.Windows.Forms.Button();
             this.btOK = new System.Windows.Forms.Button();
             this.lbNuGetAPIKey = new System.Windows.Forms.Label();
@@ -141,7 +141,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormDialogAPIKeys";
+            this.Name = "FormDialogApiKeys";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Manage NuGet API key(s)";
             this.ResumeLayout(false);
