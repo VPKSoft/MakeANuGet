@@ -25,7 +25,6 @@ SOFTWARE.
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace MakeANuGet
@@ -34,6 +33,7 @@ namespace MakeANuGet
     /// A dialog to select a SPDX license from a list.
     /// </summary>
     /// <seealso cref="System.Windows.Forms.Form" />
+    // ReSharper disable once InconsistentNaming
     public partial class FormDialogQuerySPDXLicense : Form
     {
         /// <summary>
@@ -50,6 +50,7 @@ namespace MakeANuGet
         /// <summary>
         /// An internal list of the SPDX licenses.
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         internal static SPDXLicenseCollection SPDXLicenseCollection = new SPDXLicenseCollection();
 
         private void tbSearch_TextChanged(object sender, EventArgs e)
@@ -67,17 +68,11 @@ namespace MakeANuGet
             lbLicenseList.Items.Clear();
 
             // a variable for the license list..
-            IEnumerable<SPDXLicense> licenses;
 
             // if the search text box isn't empty then filter the licenses..
-            if (tbSearch.Text.Trim() != string.Empty)
-            {
-                licenses = SPDXLicenseCollection.SearchSPDXLicenses(tbSearch.Text);
-            }
-            else // ..otherwise list all of the licenses..
-            {
-                licenses = SPDXLicenseCollection.GetSPDXLicenses();
-            }
+            var licenses = tbSearch.Text.Trim() != string.Empty
+                ? SPDXLicenseCollection.SearchSPDXLicenses(tbSearch.Text)
+                : SPDXLicenseCollection.GetSPDXLicenses();
 
             // loop through the collection and add the licenses to the list box..
             foreach (SPDXLicense license in licenses)

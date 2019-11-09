@@ -6,15 +6,22 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/VPKSoft/MakeANuGet/tree/master/VPKSoft.MakeANugetTest</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
-    <copyright>Copyright 2019</copyright>
+    <releaseNotes>Initial release of this useless package.</releaseNotes>
+    <copyright>Copyright © VPKSoft 2019</copyright>
     <tags>test void empty useless vpksoft</tags>
+    <icon>nuget-package-logo.png</icon>
+    <license type="expression">MIT-0</license>
+    <dependencies>
+      <group targetFramework=".NETFramework4.7">
+        <dependency id="$id$" version="$version$" />
+      </group>
+      <group targetFramework=".NETFramework4.7.2" />
+    </dependencies>
   </metadata>
-  <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-  <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+  <files>
+    <file src="NugetIcons\nuget-package-logo.png" target="" />
+  </files>
 </package>

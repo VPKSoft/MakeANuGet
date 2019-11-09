@@ -26,7 +26,6 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -34,7 +33,6 @@ using System.IO;
 using VPKSoft.Utils;
 using System.Diagnostics;
 using System.Threading;
-using System.Xml;
 using System.Reflection;
 using System.Xml.Linq;
 using VPKSoft.ScintillaLexers;
@@ -47,13 +45,10 @@ namespace MakeANuGet
     public partial class FormMain : Form
     {
         // use the self developed "not a markup language"..
-        private VPKNml vnml;
-
-        // the settings path (%LOCALAPPDATA%\MakeANuGet)
-        private string settingsPath;
+        private readonly VPKNml vnml;
 
         // the settings file name (to store the API key only)..
-        private string settingsFile;
+        private readonly string settingsFile;
 
         // the C# project file (*.cs) to make the NuGet from..
         private string csprojFile;
@@ -76,11 +71,13 @@ namespace MakeANuGet
         // your nuget.org API key
         private string apiKey;
 
+        // ReSharper disable twice CommentTypo
         // your apiint.nugettest.org API key
         private string testApiKey;
 
         // a path to the common settings .vnml file..
-        private string vmmlPath;
+        // ReSharper disable once IdentifierTypo
+        private readonly string vmmlPath;
 
         // a password for a certificate file to sign the nuget package..
         private string certificatePassword;
@@ -101,8 +98,9 @@ namespace MakeANuGet
         {
             InitializeComponent();
 
+            // ReSharper disable once CommentTypo
             // create the settings folder if it doesn't already exists (%LOCALAPPDATA%\MakeANuGet)..
-            settingsPath = Paths.MakeAppSettingsFolder();
+            var settingsPath = Paths.MakeAppSettingsFolder();
 
             // load the NuGet API key..
             vnml = new VPKNml();
@@ -112,6 +110,7 @@ namespace MakeANuGet
 
             apiKey = vnml["api", "key", ""].ToString();
 
+            // ReSharper disable once StringLiteralTypo
             testApiKey = vnml["apitest", "key", ""].ToString();
 
             certificatePassword = vnml["certificate", "password", ""].ToString();
@@ -148,18 +147,6 @@ namespace MakeANuGet
 
         #region ValidityChecks
         /// <summary>
-        /// The first step is to check if the .nuspec file actually exists and the XML document isn't null.
-        /// </summary>
-        private void CheckStepOne()
-        {
-            if (File.Exists(nuspecFile) && nuspec != null)
-            {
-                btGenerateNuget.Enabled = true; // and enabled the next step..;
-                mnuFillWithDefaults.Enabled = true; // set the default fill menu to enabled..
-            }
-        }
-
-        /// <summary>
         /// Blinks a text box's background color to indicate a missing or an invalid value.
         /// </summary>
         /// <param name="textBox">The text box of which background to blink in case of an error.</param>
@@ -167,7 +154,7 @@ namespace MakeANuGet
         /// <returns>True if the value was invalid; otherwise false.</returns>
         private bool BlinkTextBox(TextBox textBox, string blinkText)
         {
-            return BlinkTextBox(textBox, (() => { return textBox.Text == blinkText || textBox.Text.Trim() == string.Empty; }));
+            return BlinkTextBox(textBox, () => textBox.Text == blinkText || textBox.Text.Trim() == string.Empty);
         }
 
         /// <summary>
@@ -185,14 +172,7 @@ namespace MakeANuGet
                 for (int i = 0; i < 10; i++)
                 {
                     // the logic with remainder..
-                    if ((i % 2) == 0)
-                    {
-                        textBox.BackColor = Color.Red;
-                    }
-                    else
-                    {
-                        textBox.BackColor = SystemColors.Window;
-                    }
+                    textBox.BackColor = (i % 2) == 0 ? Color.Red : SystemColors.Window;
                     // non-asynchronous blinking - sorry..
                     Application.DoEvents();
 
@@ -218,9 +198,8 @@ namespace MakeANuGet
             return
                 !(BlinkTextBox(tbTags, "Tag1 Tag2") ||                  
 // Removed as deprecated: BlinkTextBox(tbLicenseUrl, "http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE") ||
-                  BlinkTextBox(tbLicenseFile, (() => { return tbLicenseFile.Tag == null; })) ||
+                  BlinkTextBox(tbLicenseFile, (() => tbLicenseFile.Tag == null)) ||
                   BlinkTextBox(tbProjectURL, "http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE") ||
-                  BlinkTextBox(tbIconURL, "http://ICON_URL_HERE_OR_DELETE_THIS_LINE") ||
                   BlinkTextBox(tbReleaseNotes, "Summary of changes made in this release of the package.") ||
                   BlinkTextBox(tbCopyright, "Copyright " + DateTime.Now.Year));
         }
@@ -322,81 +301,95 @@ namespace MakeANuGet
                 csprojFile = odCSProj.FileName;
 
                 // set the form's title..
-                Text = $"Make a NuGet - [{csprojFile}]";
+                Text = $@"Make a NuGet - [{csprojFile}]";
 
                 // get a file name for the .nuspec file..
                 nuspecFile = Path.ChangeExtension(csprojFile, ".nuspec");
 
-                // create a XML document (traditional - sorry) ;-)   ..
-                XmlDocument csproj = new XmlDocument();
-
                 // load the .csproj file..
-                csproj.Load(csprojFile);
-
-                // set the initial directory for the 
-                odAnyFile.InitialDirectory = Path.GetDirectoryName(csprojFile);                                
-
-                // get the assembly name and the binary path from the .csproj file for the NuGet generation..
-                foreach (XmlNode node in csproj.DocumentElement.ChildNodes)
+                if (csprojFile != null)
                 {
-                    // catch the PropertyGroup node..
-                    if (node.Name == "PropertyGroup")
+                    // create a XDocument class instance..
+                    var csproj = XDocument.Load(csprojFile);
+                    XNamespace xNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
+                    // set the initial directory for the 
+                    odAnyFile.InitialDirectory = Path.GetDirectoryName(csprojFile);
+                    
+                    var propertyGroups = csproj.Root?.Elements(xNamespace + "PropertyGroup");
+
+                    // get the assembly name and the binary path from the .csproj file for the NuGet generation..
+                    if (propertyGroups != null)
                     {
-                        // loop through the child nodes of the PropertyGroup node..
-                        foreach (XmlNode propertyGroupNode in node.ChildNodes)
+                        foreach (XElement element in propertyGroups)
                         {
-                            // try to get the assembly name with the following conditions..
-                            if (propertyGroupNode.Name == "AssemblyName" && 
-                                assemblyName == null &&
-                                node.Attributes["Condition"] == null)
+                            var propertyGroupElements = element.Elements(xNamespace + "AssemblyName");
+
+                            if (assemblyName == null)
                             {
-                                assemblyName = propertyGroupNode.InnerText; // ..found, so set it..
-                            }
-                            // try to get release output path with the following conditions..
-                            else if (propertyGroupNode.Name == "OutputPath" && 
-                                binaryPath == null && 
-                                node.Attributes["Condition"] != null &&
-                                node.Attributes["Condition"].Value.Trim(' ') == " '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ".Trim(' '))
-                            {
-                                binaryPath = propertyGroupNode.InnerText; // ..found, so set it..
+                                foreach (var propertyGroupElement in propertyGroupElements)
+                                {
+                                    if (assemblyName == null)
+                                    {
+                                        assemblyName = propertyGroupElement.Value;
+                                    }
+                                }
                             }
 
-                            // if the required information was found then break the loop..
-                            if (binaryPath != null && assemblyName != null)
+                            if (binaryPath == null)
+                            {
+                                //foreach (var conditionAttribute in conditionAttributes)
+                                var conditionAttribute = element.Attribute("Condition");
+                                {
+                                    if (conditionAttribute?.Value.Trim(' ') ==
+                                        " '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ".Trim(' '))
+                                    {
+                                        binaryPath = element.Element(xNamespace + "OutputPath")?.Value;
+                                    }
+                                }
+                            }
+
+                            if (assemblyName != null && binaryPath != null)
                             {
                                 break;
                             }
                         }
                     }
 
-                }
+                    var csprojPath = Path.GetDirectoryName(csprojFile);
 
-                // combine the assembly DLL name..
-                binaryPath = Path.Combine(Path.GetDirectoryName(csprojFile), binaryPath, assemblyName + ".dll");
-
-                // load the assembly to get data from it..
-                assemblyNuget = Assembly.LoadFile(binaryPath);
-
-                // if the .nuspec already exists, then load it..
-                if (File.Exists(nuspecFile))
-                {
-                    if (nuspecFile != null)
+                    // combine the assembly DLL name..
+                    if (binaryPath == null || csprojPath == null)
                     {
-                        nuspec = XDocument.Load(nuspecFile);
+                        return;
+                    }
+                    binaryPath = Path.Combine(csprojPath, binaryPath, assemblyName + ".dll");
+
+                    // load the assembly to get data from it..
+                    assemblyNuget = Assembly.LoadFile(binaryPath);
+
+                    // if the .nuspec already exists, then load it..
+                    if (File.Exists(nuspecFile))
+                    {
+                        if (nuspecFile != null)
+                        {
+                            nuspec = XDocument.Load(nuspecFile);
+                        }
+
+                        SetGuiEnabled(true);
+
+                        btGenerateNugetPackage.Enabled = true; // and enabled the next step..
+
+                        DisplayXmlData(); // display the loaded data..
                     }
 
-                    SetGuiEnabled(true);
+                    // enable the NuGet generation button..
+                    btGenerateNuget.Enabled = true;
 
-                    btGenerateNugetPackage.Enabled = true; // and enabled the next step..
-
-                    DisplayXmlData(); // display the loaded data..
                 }
-
-                // enable the NuGet generation button..
-                btGenerateNuget.Enabled = true;
             }
         }
 
+        // ReSharper disable once CommentTypo
         /// <summary>
         /// Gets or sets the assembly copyright value. For the getter the copyright is first tried to be gotten from the actual assembly 
         /// and if not found then the value is defaulted to a saved setting if any. The setter saves a default value to a file called
@@ -407,17 +400,16 @@ namespace MakeANuGet
             get
             {
                 // get the basic attributes for the assembly..
-                object[] obj = assemblyNuget.GetCustomAttributes(false);
+                var obj = assemblyNuget.GetCustomAttributes(false);
 
                 // loop through the attributes..
-                foreach (object o in obj)
+                foreach (var o in obj)
                 {
                     // if a AssemblyCopyrightAttribute exists..
-                    if (o.GetType() == typeof(System.Reflection.AssemblyCopyrightAttribute))
+                    if (o is AssemblyCopyrightAttribute assemblyCopyrightAttribute)
                     {
                         // return it as a string..
-                        AssemblyCopyrightAttribute aca = (AssemblyCopyrightAttribute)o;
-                        return aca.Copyright;
+                        return assemblyCopyrightAttribute.Copyright;
                     }
                 }
 
@@ -465,7 +457,7 @@ namespace MakeANuGet
         /// <summary>
         /// Gets or set a default value for the "iconUrl" in the .nuspec file.
         /// </summary>
-        private string AssemblyIconURL
+        private string AssemblyIconUrl
         {
             get
             {
@@ -584,7 +576,7 @@ namespace MakeANuGet
         /// <summary>
         /// Saves the data on the form to the .nuspec file.
         /// </summary>
-        private void SaveXMLData()
+        private void SaveXmlData()
         {
             // save the .nuspec..
             nuspec?.Save(nuspecFile);
@@ -616,6 +608,7 @@ namespace MakeANuGet
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             vnml["api", "key"] = apiKey; // the NuGet API key..
+            // ReSharper disable once StringLiteralTypo
             vnml["apitest", "key"] = testApiKey; // the test NuGet API key..
 
             // the certificate settings..
@@ -633,7 +626,7 @@ namespace MakeANuGet
             AssemblyMustAcceptLicense = cbRequireLicenseAcceptance.Checked;
 
             // an icon URL for the NuGet..
-            AssemblyIconURL = tbIconURL.Text;
+            AssemblyIconUrl = tbIconURL.Text;
         }
 
         // a user wished to generate a .nuspec file..
@@ -651,7 +644,7 @@ namespace MakeANuGet
             if (ValidateStepTwo())
             {
                 // save the .nuspec contents..
-                SaveXMLData();
+                SaveXmlData();
 
                 // generate a NuGet package..
                 if (RunSpecNuGet(" pack -Prop Configuration=Release"))
@@ -668,23 +661,30 @@ namespace MakeANuGet
         // gets the path to the generated .nupkg file..
         private string GetNugetFile()
         {
+            var csprojPath = Path.GetDirectoryName(csprojFile);
+
+            if (csprojPath == null)
+            {
+                return string.Empty;
+            }
+
             // enumerate the files in the directory where the .csproj file resides..
-            string[] nupkgs = Directory.GetFiles(Path.GetDirectoryName(csprojFile), "*.nupkg");
+            string[] nugPackages = Directory.GetFiles(csprojPath, "*.nupkg");
 
             // initialize a list of FileInfo class instances..
-            List<FileInfo> nupkgsInfo = new List<FileInfo>();
+            List<FileInfo> nugPackagesInfo = new List<FileInfo>();
 
             // loop through the gotten files and get their information..
-            foreach (string nupkg in nupkgs)
+            foreach (string nupkg in nugPackages)
             {
-                nupkgsInfo.Add(new FileInfo(nupkg));
+                nugPackagesInfo.Add(new FileInfo(nupkg));
             }
 
             // sort the files with their last write times..
-            nupkgsInfo = nupkgsInfo.OrderBy(f => f.LastWriteTime).ToList();
+            nugPackagesInfo = nugPackagesInfo.OrderBy(f => f.LastWriteTime).ToList();
 
             // pick the newest file..
-            return Path.GetFileName(nupkgsInfo.Last().Name);
+            return Path.GetFileName(nugPackagesInfo.Last().Name);
         }
 
         // a user wishes to push the NuGet package to nuget.org (https://www.nuget.org)..
@@ -693,51 +693,55 @@ namespace MakeANuGet
             string np = GetNugetFile();
 
             // push the NuGet package to nuget.org (https://int.nugettest.org) (NOTE: For testing!)..
-            if (cbTestNuGet.Checked)
-            {
-                RunSpecNuGet($" push {np} {btApiKey.Tag} -Source https://apiint.nugettest.org/v3/index.json");
-            }
-            // push the NuGet package to nuget.org (https://www.nuget.org)..
-            else
-            {
-                RunSpecNuGet($" push {np} {btApiKey.Tag} -Source https://api.nuget.org/v3/index.json");
-            }            
+            RunSpecNuGet(cbTestNuGet.Checked
+                ? $" push {np} {btApiKey.Tag} -Source https://apiint.nugettest.org/v3/index.json"
+                : $" push {np} {btApiKey.Tag} -Source https://api.nuget.org/v3/index.json");
         }
 
         /// <summary>
         /// Updates the contained nuget.exe.
         /// </summary>
-        private void UpdateNugetEXE()
+        private void UpdateNugetExe()
         {
-            string processPath = Path.Combine(VPKSoft.Utils.Paths.AppInstallDir, "nuget.exe");
+            string processPath = Path.Combine(Paths.AppInstallDir, "nuget.exe");
+
+            if (!File.Exists(processPath))
+            {
+                return;
+            }
 
             // the output from the nuget.exe is piped to the lower black text box..
             tbProcessOutput.AppendText("> " + processPath + " update - self" + Environment.NewLine);
 
             // create a process..
-            Process process = new Process();
+            Process process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = processPath,
+                    Arguments = "update -self",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WorkingDirectory = Paths.AppInstallDir,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                }
+            };
 
             // give it the process file name..
-            process.StartInfo.FileName = processPath;
 
             // give the process it's arguments..
-            process.StartInfo.Arguments = "update -self";
 
             // no shell execution..
-            process.StartInfo.UseShellExecute = false;
 
             // no exclusive window..
-            process.StartInfo.CreateNoWindow = true;
 
             // set the working directory to the same as the .csproj file location..
-            process.StartInfo.WorkingDirectory = Path.GetDirectoryName(csprojFile);
 
             // redirect the process output(s)..
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
 
             // subscribe to the process events with anonymous event handlers..
-            process.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
+            process.OutputDataReceived += (sender, e) =>
             {
                 // append new line endings to the each output string..
                 if (!String.IsNullOrEmpty(e.Data))
@@ -745,9 +749,9 @@ namespace MakeANuGet
                     // invocation is required (another process)..
                     Invoke(new MethodInvoker(delegate { tbProcessOutput.AppendText(e.Data + Environment.NewLine); }));
                 }
-            });
+            };
 
-            process.ErrorDataReceived += new DataReceivedEventHandler((sender, e) =>
+            process.ErrorDataReceived += (sender, e) =>
             {
                 // append new line endings to the each output string..
                 if (!String.IsNullOrEmpty(e.Data))
@@ -755,7 +759,7 @@ namespace MakeANuGet
                     // invocation is required (another process)..
                     Invoke(new MethodInvoker(delegate { tbProcessOutput.AppendText(e.Data + Environment.NewLine); }));
                 }
-            });
+            };
 
             // start the process after "hefty" initialization..
             process.Start();
@@ -787,14 +791,13 @@ namespace MakeANuGet
         /// </summary>
         private void SignPackage()
         {
-            if (!signPackage)
+            var csprojPath = Path.GetDirectoryName(csprojFile);
+            if (!signPackage || csprojPath == null)
             {
                 return;
             }
 
-            string processPath = Path.Combine(VPKSoft.Utils.Paths.AppInstallDir, "nuget.exe");
-
-            //nuget.exe sign "C:\Path\To\Generated\NuGet\Package\package.1.0.0.0.nupkg" -CertificatePath "C:\Path\To\Certificate\File.pfx" -Timestamper http://some.timestamp.com -CertificatePassword "xxxxxxxx"
+            string processPath = Path.Combine(Paths.AppInstallDir, "nuget.exe");
 
             var package = GetNugetFile();
 
@@ -803,29 +806,35 @@ namespace MakeANuGet
             tbProcessOutput.AppendText("> " + processPath + $" sign \"{package}\" -CertificatePath \"{certificateFile}\" -Timestamper {certificateTimeStampServer} -CertificatePassword \"{new string('•', certificatePassword.Length)}\" " + Environment.NewLine);
 
             // create a process..
-            Process process = new Process();
+            Process process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = processPath,
+                    Arguments =
+                        $"sign \"{package}\" -CertificatePath \"{certificateFile}\" -Timestamper {certificateTimeStampServer} -CertificatePassword \"{certificatePassword}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WorkingDirectory = csprojPath,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                }
+            };
 
             // give it the process file name..
-            process.StartInfo.FileName = processPath;
 
             // give the process it's arguments..
-            process.StartInfo.Arguments = $"sign \"{package}\" -CertificatePath \"{certificateFile}\" -Timestamper {certificateTimeStampServer} -CertificatePassword \"{certificatePassword}\"";
 
             // no shell execution..
-            process.StartInfo.UseShellExecute = false;
 
             // no exclusive window..
-            process.StartInfo.CreateNoWindow = true;
 
             // set the working directory to the same as the .csproj file location..
-            process.StartInfo.WorkingDirectory = Path.GetDirectoryName(csprojFile);
 
             // redirect the process output(s)..
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
 
             // subscribe to the process events with anonymous event handlers..
-            process.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
+            process.OutputDataReceived += (sender, e) =>
             {
                 // append new line endings to the each output string..
                 if (!String.IsNullOrEmpty(e.Data))
@@ -833,9 +842,9 @@ namespace MakeANuGet
                     // invocation is required (another process)..
                     Invoke(new MethodInvoker(delegate { tbProcessOutput.AppendText(e.Data + Environment.NewLine); }));
                 }
-            });
+            };
 
-            process.ErrorDataReceived += new DataReceivedEventHandler((sender, e) =>
+            process.ErrorDataReceived += (sender, e) =>
             {
                 // append new line endings to the each output string..
                 if (!String.IsNullOrEmpty(e.Data))
@@ -843,7 +852,7 @@ namespace MakeANuGet
                     // invocation is required (another process)..
                     Invoke(new MethodInvoker(delegate { tbProcessOutput.AppendText(e.Data + Environment.NewLine); }));
                 }
-            });
+            };
 
             // start the process after "hefty" initialization..
             process.Start();
@@ -881,13 +890,15 @@ namespace MakeANuGet
             // a flag indicating if the push was successful..
             bool returnValue = false;
 
+            var csprojPath = Path.GetDirectoryName(csprojFile);
+
             // first check there is everything in place..
-            if (!string.IsNullOrEmpty(csprojFile))
+            if (!string.IsNullOrEmpty(csprojFile) && csprojPath != null)
             {
                 // assume success..
                 returnValue = true;
                 // ..\..\nuget\nuget.exe spec ConfLib.csproj - Force
-                string processPath = Path.Combine(VPKSoft.Utils.Paths.AppInstallDir, "nuget.exe");
+                string processPath = Path.Combine(Paths.AppInstallDir, "nuget.exe");
 
                 // the output from the nuget.exe is piped to the lower black text box..
 
@@ -899,26 +910,31 @@ namespace MakeANuGet
                 tbProcessOutput.AppendText(commandEcho);
 
                 // create a process..
-                Process process = new Process();
+                Process process = new Process
+                {
+                    StartInfo =
+                    {
+                        FileName = processPath,
+                        Arguments = parameters,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        WorkingDirectory = csprojPath,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
+                    }
+                };
 
                 // give it the process file name..
-                process.StartInfo.FileName = processPath;
 
                 // give the process it's arguments..
-                process.StartInfo.Arguments = parameters;
 
                 // no shell execution..
-                process.StartInfo.UseShellExecute = false;
 
                 // no exclusive window..
-                process.StartInfo.CreateNoWindow = true;
 
                 // set the working directory to the same as the .csproj file location..
-                process.StartInfo.WorkingDirectory = Path.GetDirectoryName(csprojFile);
 
                 // redirect the process output(s)..
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
 
                 // subscribe to the process events with anonymous event handlers..
                 process.OutputDataReceived += (sender, e) =>
@@ -972,14 +988,14 @@ namespace MakeANuGet
                     // fill empty fields with defaults..
                     tbCopyright.Text = tbCopyright.Text == string.Empty ? AssemblyCopyright : tbCopyright.Text;
                     cbRequireLicenseAcceptance.Checked = AssemblyMustAcceptLicense;
-                    tbIconURL.Text = tbIconURL.Text == string.Empty ? AssemblyIconURL : tbIconURL.Text;
+                    tbIconURL.Text = tbIconURL.Text == string.Empty ? AssemblyIconUrl : tbIconURL.Text;
                 }
 
                 // check the process exit code and show an error dialog if the exit code is not 0..
                 if (process.ExitCode != 0)
                 {
                     returnValue = false; // indicate failure..
-                    MessageBox.Show($"Process exited with an error: {process.ExitCode}.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    MessageBox.Show($@"Process exited with an error: {process.ExitCode}.", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                 }
                 // empty line to the output..
                 tbProcessOutput.AppendText(Environment.NewLine);
@@ -1001,7 +1017,7 @@ namespace MakeANuGet
         private void mnuFillWithDefaults_Click(object sender, EventArgs e)
         {
             tbCopyright.Text = AssemblyCopyright;
-            tbIconURL.Text = AssemblyIconURL;
+            tbIconURL.Text = AssemblyIconUrl;
             cbRequireLicenseAcceptance.Checked = AssemblyMustAcceptLicense;
         }
 
@@ -1013,14 +1029,19 @@ namespace MakeANuGet
             if ((license = FormDialogQuerySPDXLicense.Execute()) != null)
             {
                 // create a list of SPDXLicense class instances..
-                List<SPDXLicense> licenses = new List<SPDXLicense>(new SPDXLicense[] { license });
+                List<SPDXLicense> licenses = new List<SPDXLicense>(new[] { license });
 
                 // set the selected license to the Tag property of the text box..
                 tbLicenseFile.Tag = licenses;
 
                 // set the text for the text box to match the license list..
                 tbLicenseFile.Text = SPDXLicenseCollection.ConstructLicenseString(licenses);
-            }            
+
+                // set the target to nothing..
+                tbLicenseFileTarget.Text = string.Empty;
+            }
+
+            SetLicenseElementSpdx();
         }
 
         // a user wishes to add to an existing license (https://spdx.org/spdx-specification-21-web-version#h.jxpfx0ykyb60)..
@@ -1044,20 +1065,27 @@ namespace MakeANuGet
 
                     // set the text for the text box to match the license list..
                     tbLicenseFile.Text = SPDXLicenseCollection.ConstructLicenseString(licenses);
+
+                    // set the target to nothing..
+                    tbLicenseFileTarget.Text = string.Empty;
                 }
                 // create a new instance of List<SPDXLicense> and add the selected license to it..
                 else
                 {
                     // create a list of SPDXLicense class instances..
-                    List<SPDXLicense> licenses = new List<SPDXLicense>(new SPDXLicense[] { license });
+                    List<SPDXLicense> licenses = new List<SPDXLicense>(new[] { license });
 
                     // set the Tag value..
                     tbLicenseFile.Tag = licenses;
 
                     // set the text for the text box to match the license list..
                     tbLicenseFile.Text = SPDXLicenseCollection.ConstructLicenseString(licenses);
+
+                    // set the target to nothing..
+                    tbLicenseFileTarget.Text = string.Empty;
                 }
             }
+            SetLicenseElementSpdx();
         }
 
         // a user wishes to use a file for a license..
@@ -1092,6 +1120,57 @@ namespace MakeANuGet
             }
         }
 
+        private void SetLicenseElementSpdx()
+        {
+            if (nuspec != null)
+            {
+                // the license data if any is stored in the tag of the
+                // license text box..
+                object license = tbLicenseFile.Tag;
+
+                if (!(license is List<SPDXLicense>))
+                {
+                    return;
+                }
+
+                // get the list of licenses from the tag..
+                List<SPDXLicense> licenses = (List<SPDXLicense>)license;
+
+                var element = nuspec.Root?.Element("metadata")?.Element("license");
+
+                var elementType = element?.Attribute("type")?.Value;
+                var elementFile = element?.Value;
+
+                if (elementType != null && elementType == "file")
+                {
+                    elementFile = Path.GetFileName(elementFile);
+                    var fileElements = nuspec.Root?.Element("files")?.Elements("file");
+
+                    if (fileElements != null)
+                    {
+                        var licenseFileElement =
+                            fileElements.FirstOrDefault(f =>
+                                (f.Attribute("src")?.Value ?? string.Empty).EndsWith(
+                                    elementFile));
+
+                        licenseFileElement?.Remove();
+                    }
+                }
+
+                element?.Remove();
+
+                // select the license identifiers..
+                var licenseStrings = licenses.Select(f => f.Identifier);
+
+                element = new XElement("license", new XAttribute("type", "expression"))
+                {
+                    Value = string.Join(" OR ", licenseStrings),
+                };
+
+                nuspec.Root?.Element("metadata")?.Add(element);
+            }
+        }
+
         private void SetLicenseElementFile(string fileName)
         {
             if (nuspec != null)
@@ -1109,7 +1188,6 @@ namespace MakeANuGet
 
                 element = nuspec.Root?.Element("metadata")?.Element("license");
                 element?.Remove();
-                element = null;
 
                 element = new XElement("license", new XAttribute("type", "file"));
                 var fileNameNoPath = Path.GetFileName(fileName);
@@ -1136,8 +1214,7 @@ namespace MakeANuGet
                 element = nuspec.Root?.Element("metadata")?.Element("icon");
                 if (element == null)
                 {
-                    element = new XElement("icon");
-                    element.Value = fileName;
+                    element = new XElement("icon") {Value = fileName};
                     nuspec.Root?.Element("metadata")?.Add(element);
                 }
             }
@@ -1159,7 +1236,7 @@ namespace MakeANuGet
         // a user wishes to check for updates for the current nuget.exe..
         private void mnuUpdateNuGetEXE_Click(object sender, EventArgs e)
         {
-            UpdateNugetEXE();
+            UpdateNugetExe();
         }
 
         // a user wishes to enter the NuGet API keys..
@@ -1177,12 +1254,14 @@ namespace MakeANuGet
                 ? btApiKey.Tag.ToString()
                 : new string('•', btApiKey.Tag.ToString().Length);
 
+            // ReSharper disable once StringLiteralTypo
             btPushNugetPackage.Text = checkBox.Checked ? "Push NuGet package to the int.nugettest.org" : "Push NuGet package to the nuget.org";
         }
 
         // show to user the about dialog..
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // ReSharper disable once ObjectCreationAsStatement
             new VPKSoft.About.FormAbout(this, "MIT", "https://github.com/VPKSoft/MageANuGet/blob/master/LICENSE");
         }
 
@@ -1218,11 +1297,6 @@ namespace MakeANuGet
         }
         #endregion
 
-        private void btIconFile_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void mnuTest_Click(object sender, EventArgs e)
         {
             if (odIconFile.ShowDialog() == DialogResult.OK)
@@ -1251,7 +1325,7 @@ namespace MakeANuGet
 
         private void mnuSaveChanges_Click(object sender, EventArgs e)
         {
-            SaveXMLData();
+            SaveXmlData();
         }
 
         private void tbSimpleElement_TextChanged(object sender, EventArgs e)
@@ -1289,7 +1363,15 @@ namespace MakeANuGet
         {
             if (nuspec != null)
             {
-                nuspec = XDocument.Parse(scintillaNuspecContents.Text);
+                try
+                {
+                    nuspec = XDocument.Parse(scintillaNuspecContents.Text);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($@"XML parsing error: {ex.Message}.", @"Error", MessageBoxButtons.OK,
+                        MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                }
             }
         }
     }
