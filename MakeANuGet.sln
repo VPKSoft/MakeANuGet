@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2042
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeANuGet", "MakeANuGet\MakeANuGet.csproj", "{749A7B43-4C7A-4EE7-B74A-7386E5090E54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VPKSoft.MakeANugetTest", "VPKSoft.MakeANugetTest\VPKSoft.MakeANugetTest.csproj", "{CD1CB4E7-06CE-4DBE-BE06-EEDF6086DE22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{749A7B43-4C7A-4EE7-B74A-7386E5090E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{749A7B43-4C7A-4EE7-B74A-7386E5090E54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{749A7B43-4C7A-4EE7-B74A-7386E5090E54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD1CB4E7-06CE-4DBE-BE06-EEDF6086DE22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD1CB4E7-06CE-4DBE-BE06-EEDF6086DE22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD1CB4E7-06CE-4DBE-BE06-EEDF6086DE22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD1CB4E7-06CE-4DBE-BE06-EEDF6086DE22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
