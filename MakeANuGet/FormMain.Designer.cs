@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,8 +79,13 @@
             this.lbTags = new System.Windows.Forms.Label();
             this.tbTags = new System.Windows.Forms.TextBox();
             this.tlpApiKey = new System.Windows.Forms.TableLayoutPanel();
+            this.btApiKey = new System.Windows.Forms.Button();
             this.lbApiKey = new System.Windows.Forms.Label();
+            this.pnToggleApiKeyVisible = new System.Windows.Forms.Panel();
             this.tlpNuGetSteps = new System.Windows.Forms.TableLayoutPanel();
+            this.pnNO1 = new System.Windows.Forms.Panel();
+            this.pnNO2 = new System.Windows.Forms.Panel();
+            this.pnNO3 = new System.Windows.Forms.Panel();
             this.btGenerateNuget = new System.Windows.Forms.Button();
             this.btGenerateNugetPackage = new System.Windows.Forms.Button();
             this.btPushNugetPackage = new System.Windows.Forms.Button();
@@ -100,18 +108,23 @@
             this.tbLicenseUrl = new System.Windows.Forms.TextBox();
             this.btClearLicenseUrl = new System.Windows.Forms.Button();
             this.tabContent = new System.Windows.Forms.TabPage();
+            this.lbFiles = new System.Windows.Forms.Label();
+            this.dgvFiles = new System.Windows.Forms.DataGridView();
+            this.colFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSelectFile = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.colExcludePattern = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colBuildAction = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.colCopyToOutput = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colFlatten = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colTarget = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colUseContentElement = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.tabNuspec = new System.Windows.Forms.TabPage();
+            this.btSaveXMLChanges = new System.Windows.Forms.Button();
             this.scintillaNuspecContents = new ScintillaNET.Scintilla();
             this.odIconFile = new System.Windows.Forms.OpenFileDialog();
             this.ttMain = new System.Windows.Forms.ToolTip(this.components);
-            this.btApiKey = new System.Windows.Forms.Button();
-            this.pnToggleApiKeyVisible = new System.Windows.Forms.Panel();
-            this.pnNO1 = new System.Windows.Forms.Panel();
-            this.pnNO2 = new System.Windows.Forms.Panel();
-            this.pnNO3 = new System.Windows.Forms.Panel();
-            this.btSaveXMLChanges = new System.Windows.Forms.Button();
-            this.dgvFiles = new System.Windows.Forms.DataGridView();
-            this.lbFiles = new System.Windows.Forms.Label();
+            this.tlpMainContainer = new System.Windows.Forms.TableLayoutPanel();
+            this.btSaveFileChanges = new System.Windows.Forms.Button();
             this.mnuMain.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.tlpIcon.SuspendLayout();
@@ -133,8 +146,9 @@
             this.tlpIconURL.SuspendLayout();
             this.tlpLicenseURL.SuspendLayout();
             this.tabContent.SuspendLayout();
-            this.tabNuspec.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).BeginInit();
+            this.tabNuspec.SuspendLayout();
+            this.tlpMainContainer.SuspendLayout();
             this.SuspendLayout();
             // 
             // mnuMain
@@ -144,7 +158,7 @@
             this.aboutToolStripMenuItem});
             this.mnuMain.Location = new System.Drawing.Point(0, 0);
             this.mnuMain.Name = "mnuMain";
-            this.mnuMain.Size = new System.Drawing.Size(984, 24);
+            this.mnuMain.Size = new System.Drawing.Size(988, 24);
             this.mnuMain.TabIndex = 1;
             this.mnuMain.Text = "menuStrip1";
             // 
@@ -165,7 +179,7 @@
             // mnuOpenProject
             // 
             this.mnuOpenProject.Name = "mnuOpenProject";
-            this.mnuOpenProject.Size = new System.Drawing.Size(180, 22);
+            this.mnuOpenProject.Size = new System.Drawing.Size(172, 22);
             this.mnuOpenProject.Text = "Open Project";
             this.mnuOpenProject.Click += new System.EventHandler(this.mnuOpenProject_Click);
             // 
@@ -173,7 +187,7 @@
             // 
             this.mnuSaveChanges.Enabled = false;
             this.mnuSaveChanges.Name = "mnuSaveChanges";
-            this.mnuSaveChanges.Size = new System.Drawing.Size(180, 22);
+            this.mnuSaveChanges.Size = new System.Drawing.Size(172, 22);
             this.mnuSaveChanges.Text = "Save changes";
             this.mnuSaveChanges.Click += new System.EventHandler(this.mnuSaveChanges_Click);
             // 
@@ -181,35 +195,35 @@
             // 
             this.mnuFillWithDefaults.Enabled = false;
             this.mnuFillWithDefaults.Name = "mnuFillWithDefaults";
-            this.mnuFillWithDefaults.Size = new System.Drawing.Size(180, 22);
+            this.mnuFillWithDefaults.Size = new System.Drawing.Size(172, 22);
             this.mnuFillWithDefaults.Text = "Fill with defaults";
             this.mnuFillWithDefaults.Click += new System.EventHandler(this.mnuFillWithDefaults_Click);
             // 
             // mnuUpdateNuGetEXE
             // 
             this.mnuUpdateNuGetEXE.Name = "mnuUpdateNuGetEXE";
-            this.mnuUpdateNuGetEXE.Size = new System.Drawing.Size(180, 22);
+            this.mnuUpdateNuGetEXE.Size = new System.Drawing.Size(172, 22);
             this.mnuUpdateNuGetEXE.Text = "Update nuget.exe";
             this.mnuUpdateNuGetEXE.Click += new System.EventHandler(this.mnuUpdateNuGetEXE_Click);
             // 
             // mnuEnterAPIKeys
             // 
             this.mnuEnterAPIKeys.Name = "mnuEnterAPIKeys";
-            this.mnuEnterAPIKeys.Size = new System.Drawing.Size(180, 22);
+            this.mnuEnterAPIKeys.Size = new System.Drawing.Size(172, 22);
             this.mnuEnterAPIKeys.Text = "Enter API key(s)";
             this.mnuEnterAPIKeys.Click += new System.EventHandler(this.mnuEnterAPIKeys_Click);
             // 
             // mnuCertificateSettings
             // 
             this.mnuCertificateSettings.Name = "mnuCertificateSettings";
-            this.mnuCertificateSettings.Size = new System.Drawing.Size(180, 22);
+            this.mnuCertificateSettings.Size = new System.Drawing.Size(172, 22);
             this.mnuCertificateSettings.Text = "Certificate settings";
             this.mnuCertificateSettings.Click += new System.EventHandler(this.MnuCertificateSettings_Click);
             // 
             // mnuTest
             // 
             this.mnuTest.Name = "mnuTest";
-            this.mnuTest.Size = new System.Drawing.Size(180, 22);
+            this.mnuTest.Size = new System.Drawing.Size(172, 22);
             this.mnuTest.Text = "Test";
             this.mnuTest.Click += new System.EventHandler(this.mnuTest_Click);
             // 
@@ -227,9 +241,6 @@
             // 
             // tlpMain
             // 
-            this.tlpMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -244,7 +255,8 @@
             this.tlpMain.Controls.Add(this.tlpTags, 0, 2);
             this.tlpMain.Controls.Add(this.tlpApiKey, 0, 0);
             this.tlpMain.Controls.Add(this.tlpNuGetSteps, 0, 1);
-            this.tlpMain.Location = new System.Drawing.Point(6, 6);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(3, 3);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 12;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -259,7 +271,7 @@
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(940, 374);
+            this.tlpMain.Size = new System.Drawing.Size(944, 363);
             this.tlpMain.TabIndex = 2;
             // 
             // tlpIcon
@@ -281,13 +293,13 @@
             this.tlpIcon.Name = "tlpIcon";
             this.tlpIcon.RowCount = 1;
             this.tlpIcon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpIcon.Size = new System.Drawing.Size(934, 26);
+            this.tlpIcon.Size = new System.Drawing.Size(938, 26);
             this.tlpIcon.TabIndex = 13;
             // 
             // btIconFile
             // 
             this.btIconFile.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btIconFile.Location = new System.Drawing.Point(889, 3);
+            this.btIconFile.Location = new System.Drawing.Point(893, 3);
             this.btIconFile.Name = "btIconFile";
             this.btIconFile.Size = new System.Drawing.Size(42, 20);
             this.btIconFile.TabIndex = 3;
@@ -309,18 +321,18 @@
             // 
             this.tbIcon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbIcon.Location = new System.Drawing.Point(283, 3);
+            this.tbIcon.Location = new System.Drawing.Point(284, 3);
             this.tbIcon.Name = "tbIcon";
-            this.tbIcon.Size = new System.Drawing.Size(302, 20);
+            this.tbIcon.Size = new System.Drawing.Size(303, 20);
             this.tbIcon.TabIndex = 1;
             // 
             // tbIconTarget
             // 
             this.tbIconTarget.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbIconTarget.Location = new System.Drawing.Point(591, 3);
+            this.tbIconTarget.Location = new System.Drawing.Point(593, 3);
             this.tbIconTarget.Name = "tbIconTarget";
-            this.tbIconTarget.Size = new System.Drawing.Size(292, 20);
+            this.tbIconTarget.Size = new System.Drawing.Size(294, 20);
             this.tbIconTarget.TabIndex = 4;
             this.tbIconTarget.TextChanged += new System.EventHandler(this.btLicenseFile_Click);
             // 
@@ -339,7 +351,7 @@
             this.tlpUseCodeSigningCertificate.Name = "tlpUseCodeSigningCertificate";
             this.tlpUseCodeSigningCertificate.RowCount = 1;
             this.tlpUseCodeSigningCertificate.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpUseCodeSigningCertificate.Size = new System.Drawing.Size(934, 20);
+            this.tlpUseCodeSigningCertificate.Size = new System.Drawing.Size(938, 20);
             this.tlpUseCodeSigningCertificate.TabIndex = 12;
             // 
             // lbUseCodeSigningCertificate
@@ -355,7 +367,7 @@
             // cbUseCodeSigningCertificate
             // 
             this.cbUseCodeSigningCertificate.AutoSize = true;
-            this.cbUseCodeSigningCertificate.Location = new System.Drawing.Point(283, 3);
+            this.cbUseCodeSigningCertificate.Location = new System.Drawing.Point(284, 3);
             this.cbUseCodeSigningCertificate.Name = "cbUseCodeSigningCertificate";
             this.cbUseCodeSigningCertificate.Size = new System.Drawing.Size(15, 14);
             this.cbUseCodeSigningCertificate.TabIndex = 1;
@@ -385,7 +397,7 @@
             this.tlpLicenseFileOrType.Name = "tlpLicenseFileOrType";
             this.tlpLicenseFileOrType.RowCount = 1;
             this.tlpLicenseFileOrType.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpLicenseFileOrType.Size = new System.Drawing.Size(934, 29);
+            this.tlpLicenseFileOrType.Size = new System.Drawing.Size(938, 29);
             this.tlpLicenseFileOrType.TabIndex = 11;
             // 
             // lbLicenseFileOrType
@@ -402,15 +414,15 @@
             // 
             this.tbLicenseFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLicenseFile.Location = new System.Drawing.Point(283, 3);
+            this.tbLicenseFile.Location = new System.Drawing.Point(284, 3);
             this.tbLicenseFile.Name = "tbLicenseFile";
-            this.tbLicenseFile.Size = new System.Drawing.Size(302, 20);
+            this.tbLicenseFile.Size = new System.Drawing.Size(303, 20);
             this.tbLicenseFile.TabIndex = 1;
             // 
             // btLicenseFile
             // 
             this.btLicenseFile.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btLicenseFile.Location = new System.Drawing.Point(796, 3);
+            this.btLicenseFile.Location = new System.Drawing.Point(799, 3);
             this.btLicenseFile.Name = "btLicenseFile";
             this.btLicenseFile.Size = new System.Drawing.Size(40, 23);
             this.btLicenseFile.TabIndex = 2;
@@ -421,7 +433,7 @@
             // btSelectLicenseByType
             // 
             this.btSelectLicenseByType.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btSelectLicenseByType.Location = new System.Drawing.Point(842, 3);
+            this.btSelectLicenseByType.Location = new System.Drawing.Point(845, 3);
             this.btSelectLicenseByType.Name = "btSelectLicenseByType";
             this.btSelectLicenseByType.Size = new System.Drawing.Size(40, 23);
             this.btSelectLicenseByType.TabIndex = 3;
@@ -431,7 +443,7 @@
             // 
             // btAddLicenseByType
             // 
-            this.btAddLicenseByType.Location = new System.Drawing.Point(888, 3);
+            this.btAddLicenseByType.Location = new System.Drawing.Point(891, 3);
             this.btAddLicenseByType.Name = "btAddLicenseByType";
             this.btAddLicenseByType.Size = new System.Drawing.Size(43, 23);
             this.btAddLicenseByType.TabIndex = 4;
@@ -443,9 +455,9 @@
             // 
             this.tbLicenseFileTarget.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLicenseFileTarget.Location = new System.Drawing.Point(591, 3);
+            this.tbLicenseFileTarget.Location = new System.Drawing.Point(593, 3);
             this.tbLicenseFileTarget.Name = "tbLicenseFileTarget";
-            this.tbLicenseFileTarget.Size = new System.Drawing.Size(199, 20);
+            this.tbLicenseFileTarget.Size = new System.Drawing.Size(200, 20);
             this.tbLicenseFileTarget.TabIndex = 5;
             // 
             // tlpRequireLicenseAcceptance
@@ -463,7 +475,7 @@
             this.tlpRequireLicenseAcceptance.Name = "tlpRequireLicenseAcceptance";
             this.tlpRequireLicenseAcceptance.RowCount = 1;
             this.tlpRequireLicenseAcceptance.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRequireLicenseAcceptance.Size = new System.Drawing.Size(934, 20);
+            this.tlpRequireLicenseAcceptance.Size = new System.Drawing.Size(938, 20);
             this.tlpRequireLicenseAcceptance.TabIndex = 10;
             // 
             // lbRequireLicenseAcceptance
@@ -479,7 +491,7 @@
             // cbRequireLicenseAcceptance
             // 
             this.cbRequireLicenseAcceptance.AutoSize = true;
-            this.cbRequireLicenseAcceptance.Location = new System.Drawing.Point(283, 3);
+            this.cbRequireLicenseAcceptance.Location = new System.Drawing.Point(284, 3);
             this.cbRequireLicenseAcceptance.Name = "cbRequireLicenseAcceptance";
             this.cbRequireLicenseAcceptance.Size = new System.Drawing.Size(15, 14);
             this.cbRequireLicenseAcceptance.TabIndex = 1;
@@ -502,7 +514,7 @@
             this.tlpDescription.Name = "tlpDescription";
             this.tlpDescription.RowCount = 1;
             this.tlpDescription.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpDescription.Size = new System.Drawing.Size(934, 26);
+            this.tlpDescription.Size = new System.Drawing.Size(938, 26);
             this.tlpDescription.TabIndex = 9;
             // 
             // lbDescription
@@ -519,9 +531,9 @@
             // 
             this.tbDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbDescription.Location = new System.Drawing.Point(283, 3);
+            this.tbDescription.Location = new System.Drawing.Point(284, 3);
             this.tbDescription.Name = "tbDescription";
-            this.tbDescription.Size = new System.Drawing.Size(648, 20);
+            this.tbDescription.Size = new System.Drawing.Size(651, 20);
             this.tbDescription.TabIndex = 1;
             this.tbDescription.Tag = "description";
             this.tbDescription.TextChanged += new System.EventHandler(this.tbSimpleElement_TextChanged);
@@ -541,7 +553,7 @@
             this.tlpCopyright.Name = "tlpCopyright";
             this.tlpCopyright.RowCount = 1;
             this.tlpCopyright.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCopyright.Size = new System.Drawing.Size(934, 26);
+            this.tlpCopyright.Size = new System.Drawing.Size(938, 26);
             this.tlpCopyright.TabIndex = 8;
             // 
             // lbCopyright
@@ -561,9 +573,9 @@
             // 
             this.tbCopyright.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbCopyright.Location = new System.Drawing.Point(283, 3);
+            this.tbCopyright.Location = new System.Drawing.Point(284, 3);
             this.tbCopyright.Name = "tbCopyright";
-            this.tbCopyright.Size = new System.Drawing.Size(648, 20);
+            this.tbCopyright.Size = new System.Drawing.Size(651, 20);
             this.tbCopyright.TabIndex = 1;
             this.tbCopyright.Tag = "copyright";
             this.tbCopyright.TextChanged += new System.EventHandler(this.tbSimpleElement_TextChanged);
@@ -583,7 +595,7 @@
             this.tlpReleaseNotes.Name = "tlpReleaseNotes";
             this.tlpReleaseNotes.RowCount = 1;
             this.tlpReleaseNotes.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpReleaseNotes.Size = new System.Drawing.Size(934, 26);
+            this.tlpReleaseNotes.Size = new System.Drawing.Size(938, 26);
             this.tlpReleaseNotes.TabIndex = 7;
             // 
             // lbReleaseNotes
@@ -600,9 +612,9 @@
             // 
             this.tbReleaseNotes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbReleaseNotes.Location = new System.Drawing.Point(283, 3);
+            this.tbReleaseNotes.Location = new System.Drawing.Point(284, 3);
             this.tbReleaseNotes.Name = "tbReleaseNotes";
-            this.tbReleaseNotes.Size = new System.Drawing.Size(648, 20);
+            this.tbReleaseNotes.Size = new System.Drawing.Size(651, 20);
             this.tbReleaseNotes.TabIndex = 1;
             this.tbReleaseNotes.Tag = "releaseNotes";
             this.tbReleaseNotes.TextChanged += new System.EventHandler(this.tbSimpleElement_TextChanged);
@@ -622,7 +634,7 @@
             this.tlpProjectURL.Name = "tlpProjectURL";
             this.tlpProjectURL.RowCount = 1;
             this.tlpProjectURL.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpProjectURL.Size = new System.Drawing.Size(934, 26);
+            this.tlpProjectURL.Size = new System.Drawing.Size(938, 26);
             this.tlpProjectURL.TabIndex = 5;
             // 
             // lbProjectURL
@@ -639,9 +651,9 @@
             // 
             this.tbProjectURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbProjectURL.Location = new System.Drawing.Point(283, 3);
+            this.tbProjectURL.Location = new System.Drawing.Point(284, 3);
             this.tbProjectURL.Name = "tbProjectURL";
-            this.tbProjectURL.Size = new System.Drawing.Size(648, 20);
+            this.tbProjectURL.Size = new System.Drawing.Size(651, 20);
             this.tbProjectURL.TabIndex = 1;
             this.tbProjectURL.Tag = "projectUrl";
             this.tbProjectURL.TextChanged += new System.EventHandler(this.tbSimpleElement_TextChanged);
@@ -661,7 +673,7 @@
             this.tlpTags.Name = "tlpTags";
             this.tlpTags.RowCount = 1;
             this.tlpTags.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpTags.Size = new System.Drawing.Size(934, 26);
+            this.tlpTags.Size = new System.Drawing.Size(938, 26);
             this.tlpTags.TabIndex = 1;
             // 
             // lbTags
@@ -678,9 +690,9 @@
             // 
             this.tbTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbTags.Location = new System.Drawing.Point(283, 3);
+            this.tbTags.Location = new System.Drawing.Point(284, 3);
             this.tbTags.Name = "tbTags";
-            this.tbTags.Size = new System.Drawing.Size(648, 20);
+            this.tbTags.Size = new System.Drawing.Size(651, 20);
             this.tbTags.TabIndex = 1;
             this.tbTags.Tag = "tags";
             this.tbTags.TextChanged += new System.EventHandler(this.tbSimpleElement_TextChanged);
@@ -702,8 +714,19 @@
             this.tlpApiKey.Name = "tlpApiKey";
             this.tlpApiKey.RowCount = 1;
             this.tlpApiKey.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpApiKey.Size = new System.Drawing.Size(934, 29);
+            this.tlpApiKey.Size = new System.Drawing.Size(938, 29);
             this.tlpApiKey.TabIndex = 0;
+            // 
+            // btApiKey
+            // 
+            this.btApiKey.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btApiKey.Location = new System.Drawing.Point(284, 3);
+            this.btApiKey.Name = "btApiKey";
+            this.btApiKey.Size = new System.Drawing.Size(603, 23);
+            this.btApiKey.TabIndex = 3;
+            this.btApiKey.Text = "...";
+            this.btApiKey.UseVisualStyleBackColor = true;
+            this.btApiKey.Click += new System.EventHandler(this.mnuEnterAPIKeys_Click);
             // 
             // lbApiKey
             // 
@@ -714,6 +737,19 @@
             this.lbApiKey.TabIndex = 0;
             this.lbApiKey.Text = "API key:";
             this.lbApiKey.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // pnToggleApiKeyVisible
+            // 
+            this.pnToggleApiKeyVisible.BackgroundImage = global::MakeANuGet.Properties.Resources.eye_password_hidden;
+            this.pnToggleApiKeyVisible.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pnToggleApiKeyVisible.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnToggleApiKeyVisible.Location = new System.Drawing.Point(890, 0);
+            this.pnToggleApiKeyVisible.Margin = new System.Windows.Forms.Padding(0);
+            this.pnToggleApiKeyVisible.Name = "pnToggleApiKeyVisible";
+            this.pnToggleApiKeyVisible.Size = new System.Drawing.Size(48, 29);
+            this.pnToggleApiKeyVisible.TabIndex = 4;
+            this.pnToggleApiKeyVisible.Tag = "false";
+            this.pnToggleApiKeyVisible.Click += new System.EventHandler(this.pnToggleApiKeyVisible_Click);
             // 
             // tlpNuGetSteps
             // 
@@ -743,8 +779,35 @@
             this.tlpNuGetSteps.Name = "tlpNuGetSteps";
             this.tlpNuGetSteps.RowCount = 1;
             this.tlpNuGetSteps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpNuGetSteps.Size = new System.Drawing.Size(934, 36);
+            this.tlpNuGetSteps.Size = new System.Drawing.Size(938, 36);
             this.tlpNuGetSteps.TabIndex = 2;
+            // 
+            // pnNO1
+            // 
+            this.pnNO1.BackgroundImage = global::MakeANuGet.Properties.Resources.no_1;
+            this.pnNO1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pnNO1.Location = new System.Drawing.Point(3, 3);
+            this.pnNO1.Name = "pnNO1";
+            this.pnNO1.Size = new System.Drawing.Size(30, 30);
+            this.pnNO1.TabIndex = 0;
+            // 
+            // pnNO2
+            // 
+            this.pnNO2.BackgroundImage = global::MakeANuGet.Properties.Resources.no_2;
+            this.pnNO2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pnNO2.Location = new System.Drawing.Point(172, 3);
+            this.pnNO2.Name = "pnNO2";
+            this.pnNO2.Size = new System.Drawing.Size(30, 30);
+            this.pnNO2.TabIndex = 1;
+            // 
+            // pnNO3
+            // 
+            this.pnNO3.BackgroundImage = global::MakeANuGet.Properties.Resources.no_3;
+            this.pnNO3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pnNO3.Location = new System.Drawing.Point(405, 3);
+            this.pnNO3.Name = "pnNO3";
+            this.pnNO3.Size = new System.Drawing.Size(30, 30);
+            this.pnNO3.TabIndex = 2;
             // 
             // btGenerateNuget
             // 
@@ -788,7 +851,7 @@
             this.cbForceNuspec.AutoSize = true;
             this.cbForceNuspec.Location = new System.Drawing.Point(645, 3);
             this.cbForceNuspec.Name = "cbForceNuspec";
-            this.cbForceNuspec.Size = new System.Drawing.Size(140, 17);
+            this.cbForceNuspec.Size = new System.Drawing.Size(142, 17);
             this.cbForceNuspec.TabIndex = 6;
             this.cbForceNuspec.Text = "Force nuspec regenration";
             this.cbForceNuspec.UseVisualStyleBackColor = true;
@@ -796,7 +859,7 @@
             // cbTestNuGet
             // 
             this.cbTestNuGet.AutoSize = true;
-            this.cbTestNuGet.Location = new System.Drawing.Point(791, 3);
+            this.cbTestNuGet.Location = new System.Drawing.Point(793, 3);
             this.cbTestNuGet.Name = "cbTestNuGet";
             this.cbTestNuGet.Size = new System.Drawing.Size(99, 17);
             this.cbTestNuGet.TabIndex = 7;
@@ -813,12 +876,12 @@
             this.tlpProcessOutput.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpProcessOutput.Controls.Add(this.lbProcessOutput, 0, 0);
             this.tlpProcessOutput.Controls.Add(this.tbProcessOutput, 0, 1);
-            this.tlpProcessOutput.Location = new System.Drawing.Point(12, 441);
+            this.tlpProcessOutput.Location = new System.Drawing.Point(3, 404);
             this.tlpProcessOutput.Name = "tlpProcessOutput";
             this.tlpProcessOutput.RowCount = 2;
             this.tlpProcessOutput.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpProcessOutput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpProcessOutput.Size = new System.Drawing.Size(960, 159);
+            this.tlpProcessOutput.Size = new System.Drawing.Size(958, 166);
             this.tlpProcessOutput.TabIndex = 3;
             // 
             // lbProcessOutput
@@ -843,7 +906,7 @@
             this.tbProcessOutput.Name = "tbProcessOutput";
             this.tbProcessOutput.ReadOnly = true;
             this.tbProcessOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbProcessOutput.Size = new System.Drawing.Size(954, 140);
+            this.tbProcessOutput.Size = new System.Drawing.Size(952, 147);
             this.tbProcessOutput.TabIndex = 1;
             // 
             // odAnyFile
@@ -852,16 +915,15 @@
             // 
             // tcMain
             // 
-            this.tcMain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tcMain.Controls.Add(this.tabMain);
             this.tcMain.Controls.Add(this.tabDeprecated);
             this.tcMain.Controls.Add(this.tabContent);
             this.tcMain.Controls.Add(this.tabNuspec);
-            this.tcMain.Location = new System.Drawing.Point(12, 27);
+            this.tcMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tcMain.Location = new System.Drawing.Point(3, 3);
             this.tcMain.Name = "tcMain";
             this.tcMain.SelectedIndex = 0;
-            this.tcMain.Size = new System.Drawing.Size(960, 412);
+            this.tcMain.Size = new System.Drawing.Size(958, 395);
             this.tcMain.TabIndex = 3;
             this.tcMain.Selected += new System.Windows.Forms.TabControlEventHandler(this.tcMain_Selected);
             this.tcMain.Click += new System.EventHandler(this.tcMain_Click);
@@ -872,7 +934,7 @@
             this.tabMain.Location = new System.Drawing.Point(4, 22);
             this.tabMain.Name = "tabMain";
             this.tabMain.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMain.Size = new System.Drawing.Size(952, 386);
+            this.tabMain.Size = new System.Drawing.Size(950, 369);
             this.tabMain.TabIndex = 0;
             this.tabMain.Text = "Main";
             this.tabMain.UseVisualStyleBackColor = true;
@@ -883,7 +945,7 @@
             this.tabDeprecated.Location = new System.Drawing.Point(4, 22);
             this.tabDeprecated.Name = "tabDeprecated";
             this.tabDeprecated.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDeprecated.Size = new System.Drawing.Size(952, 386);
+            this.tabDeprecated.Size = new System.Drawing.Size(950, 369);
             this.tabDeprecated.TabIndex = 1;
             this.tabDeprecated.Text = "Deprecated";
             this.tabDeprecated.UseVisualStyleBackColor = true;
@@ -903,7 +965,7 @@
             this.tlpDeprecated.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDeprecated.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDeprecated.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpDeprecated.Size = new System.Drawing.Size(940, 374);
+            this.tlpDeprecated.Size = new System.Drawing.Size(938, 357);
             this.tlpDeprecated.TabIndex = 9;
             // 
             // tlpIconURL
@@ -923,15 +985,15 @@
             this.tlpIconURL.Name = "tlpIconURL";
             this.tlpIconURL.RowCount = 1;
             this.tlpIconURL.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpIconURL.Size = new System.Drawing.Size(934, 29);
+            this.tlpIconURL.Size = new System.Drawing.Size(932, 29);
             this.tlpIconURL.TabIndex = 7;
             // 
             // btClearIconUrl
             // 
             this.btClearIconUrl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btClearIconUrl.Location = new System.Drawing.Point(890, 3);
+            this.btClearIconUrl.Location = new System.Drawing.Point(887, 3);
             this.btClearIconUrl.Name = "btClearIconUrl";
-            this.btClearIconUrl.Size = new System.Drawing.Size(41, 23);
+            this.btClearIconUrl.Size = new System.Drawing.Size(42, 23);
             this.btClearIconUrl.TabIndex = 3;
             this.btClearIconUrl.Text = "X";
             this.btClearIconUrl.UseVisualStyleBackColor = true;
@@ -952,9 +1014,9 @@
             this.tbIconURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbIconURL.BackColor = System.Drawing.Color.DarkGray;
-            this.tbIconURL.Location = new System.Drawing.Point(283, 3);
+            this.tbIconURL.Location = new System.Drawing.Point(282, 3);
             this.tbIconURL.Name = "tbIconURL";
-            this.tbIconURL.Size = new System.Drawing.Size(601, 20);
+            this.tbIconURL.Size = new System.Drawing.Size(599, 20);
             this.tbIconURL.TabIndex = 1;
             this.tbIconURL.Tag = "iconUrl;1";
             this.tbIconURL.TextChanged += new System.EventHandler(this.tbSimpleElement_TextChanged);
@@ -976,7 +1038,7 @@
             this.tlpLicenseURL.Name = "tlpLicenseURL";
             this.tlpLicenseURL.RowCount = 1;
             this.tlpLicenseURL.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpLicenseURL.Size = new System.Drawing.Size(934, 29);
+            this.tlpLicenseURL.Size = new System.Drawing.Size(932, 29);
             this.tlpLicenseURL.TabIndex = 8;
             // 
             // lbLicenseUrl
@@ -994,9 +1056,9 @@
             this.tbLicenseUrl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbLicenseUrl.BackColor = System.Drawing.Color.DarkGray;
-            this.tbLicenseUrl.Location = new System.Drawing.Point(283, 3);
+            this.tbLicenseUrl.Location = new System.Drawing.Point(282, 3);
             this.tbLicenseUrl.Name = "tbLicenseUrl";
-            this.tbLicenseUrl.Size = new System.Drawing.Size(601, 20);
+            this.tbLicenseUrl.Size = new System.Drawing.Size(599, 20);
             this.tbLicenseUrl.TabIndex = 1;
             this.tbLicenseUrl.Tag = "licenseUrl;1";
             this.tbLicenseUrl.TextChanged += new System.EventHandler(this.tbSimpleElement_TextChanged);
@@ -1004,9 +1066,9 @@
             // btClearLicenseUrl
             // 
             this.btClearLicenseUrl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btClearLicenseUrl.Location = new System.Drawing.Point(890, 3);
+            this.btClearLicenseUrl.Location = new System.Drawing.Point(887, 3);
             this.btClearLicenseUrl.Name = "btClearLicenseUrl";
-            this.btClearLicenseUrl.Size = new System.Drawing.Size(41, 23);
+            this.btClearLicenseUrl.Size = new System.Drawing.Size(42, 23);
             this.btClearLicenseUrl.TabIndex = 2;
             this.btClearLicenseUrl.Text = "X";
             this.btClearLicenseUrl.UseVisualStyleBackColor = true;
@@ -1014,113 +1076,16 @@
             // 
             // tabContent
             // 
+            this.tabContent.Controls.Add(this.btSaveFileChanges);
             this.tabContent.Controls.Add(this.lbFiles);
             this.tabContent.Controls.Add(this.dgvFiles);
             this.tabContent.Location = new System.Drawing.Point(4, 22);
             this.tabContent.Name = "tabContent";
             this.tabContent.Padding = new System.Windows.Forms.Padding(3);
-            this.tabContent.Size = new System.Drawing.Size(952, 386);
+            this.tabContent.Size = new System.Drawing.Size(950, 369);
             this.tabContent.TabIndex = 2;
             this.tabContent.Text = "Content / Files";
             this.tabContent.UseVisualStyleBackColor = true;
-            // 
-            // tabNuspec
-            // 
-            this.tabNuspec.Controls.Add(this.btSaveXMLChanges);
-            this.tabNuspec.Controls.Add(this.scintillaNuspecContents);
-            this.tabNuspec.Location = new System.Drawing.Point(4, 22);
-            this.tabNuspec.Name = "tabNuspec";
-            this.tabNuspec.Padding = new System.Windows.Forms.Padding(3);
-            this.tabNuspec.Size = new System.Drawing.Size(952, 386);
-            this.tabNuspec.TabIndex = 3;
-            this.tabNuspec.Text = ".nuspec contents";
-            this.tabNuspec.UseVisualStyleBackColor = true;
-            // 
-            // scintillaNuspecContents
-            // 
-            this.scintillaNuspecContents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.scintillaNuspecContents.Location = new System.Drawing.Point(6, 6);
-            this.scintillaNuspecContents.Name = "scintillaNuspecContents";
-            this.scintillaNuspecContents.Size = new System.Drawing.Size(940, 345);
-            this.scintillaNuspecContents.TabIndex = 0;
-            // 
-            // odIconFile
-            // 
-            this.odIconFile.Filter = "Image files|*.png;*.jpg;*.jpeg";
-            this.odIconFile.Title = "Select an image file for the icon";
-            // 
-            // btApiKey
-            // 
-            this.btApiKey.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btApiKey.Location = new System.Drawing.Point(283, 3);
-            this.btApiKey.Name = "btApiKey";
-            this.btApiKey.Size = new System.Drawing.Size(601, 23);
-            this.btApiKey.TabIndex = 3;
-            this.btApiKey.Text = "...";
-            this.btApiKey.UseVisualStyleBackColor = true;
-            // 
-            // pnToggleApiKeyVisible
-            // 
-            this.pnToggleApiKeyVisible.BackgroundImage = global::MakeANuGet.Properties.Resources.eye_password_hidden;
-            this.pnToggleApiKeyVisible.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.pnToggleApiKeyVisible.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnToggleApiKeyVisible.Location = new System.Drawing.Point(887, 0);
-            this.pnToggleApiKeyVisible.Margin = new System.Windows.Forms.Padding(0);
-            this.pnToggleApiKeyVisible.Name = "pnToggleApiKeyVisible";
-            this.pnToggleApiKeyVisible.Size = new System.Drawing.Size(47, 29);
-            this.pnToggleApiKeyVisible.TabIndex = 4;
-            this.pnToggleApiKeyVisible.Tag = "false";
-            this.pnToggleApiKeyVisible.Click += new System.EventHandler(this.pnToggleApiKeyVisible_Click);
-            // 
-            // pnNO1
-            // 
-            this.pnNO1.BackgroundImage = global::MakeANuGet.Properties.Resources.no_1;
-            this.pnNO1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pnNO1.Location = new System.Drawing.Point(3, 3);
-            this.pnNO1.Name = "pnNO1";
-            this.pnNO1.Size = new System.Drawing.Size(30, 30);
-            this.pnNO1.TabIndex = 0;
-            // 
-            // pnNO2
-            // 
-            this.pnNO2.BackgroundImage = global::MakeANuGet.Properties.Resources.no_2;
-            this.pnNO2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pnNO2.Location = new System.Drawing.Point(172, 3);
-            this.pnNO2.Name = "pnNO2";
-            this.pnNO2.Size = new System.Drawing.Size(30, 30);
-            this.pnNO2.TabIndex = 1;
-            // 
-            // pnNO3
-            // 
-            this.pnNO3.BackgroundImage = global::MakeANuGet.Properties.Resources.no_3;
-            this.pnNO3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pnNO3.Location = new System.Drawing.Point(405, 3);
-            this.pnNO3.Name = "pnNO3";
-            this.pnNO3.Size = new System.Drawing.Size(30, 30);
-            this.pnNO3.TabIndex = 2;
-            // 
-            // btSaveXMLChanges
-            // 
-            this.btSaveXMLChanges.Location = new System.Drawing.Point(6, 357);
-            this.btSaveXMLChanges.Name = "btSaveXMLChanges";
-            this.btSaveXMLChanges.Size = new System.Drawing.Size(160, 23);
-            this.btSaveXMLChanges.TabIndex = 1;
-            this.btSaveXMLChanges.Text = "Save changes";
-            this.btSaveXMLChanges.UseVisualStyleBackColor = true;
-            this.btSaveXMLChanges.Click += new System.EventHandler(this.btSaveXMLChanges_Click);
-            // 
-            // dgvFiles
-            // 
-            this.dgvFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvFiles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvFiles.Location = new System.Drawing.Point(6, 19);
-            this.dgvFiles.Name = "dgvFiles";
-            this.dgvFiles.Size = new System.Drawing.Size(940, 361);
-            this.dgvFiles.TabIndex = 0;
             // 
             // lbFiles
             // 
@@ -1131,14 +1096,168 @@
             this.lbFiles.TabIndex = 1;
             this.lbFiles.Text = "Files section:";
             // 
+            // dgvFiles
+            // 
+            this.dgvFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvFiles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvFiles.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colFile,
+            this.colSelectFile,
+            this.colExcludePattern,
+            this.colBuildAction,
+            this.colCopyToOutput,
+            this.colFlatten,
+            this.colTarget,
+            this.colUseContentElement});
+            this.dgvFiles.Location = new System.Drawing.Point(6, 19);
+            this.dgvFiles.Name = "dgvFiles";
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvFiles.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            this.dgvFiles.Size = new System.Drawing.Size(938, 315);
+            this.dgvFiles.TabIndex = 0;
+            this.dgvFiles.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvFiles_CellBeginEdit);
+            this.dgvFiles.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvFiles_CellContentClick);
+            // 
+            // colFile
+            // 
+            this.colFile.HeaderText = "File(s)";
+            this.colFile.Name = "colFile";
+            this.colFile.Width = 250;
+            // 
+            // colSelectFile
+            // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.NullValue = "...";
+            this.colSelectFile.DefaultCellStyle = dataGridViewCellStyle1;
+            this.colSelectFile.HeaderText = "...";
+            this.colSelectFile.Name = "colSelectFile";
+            this.colSelectFile.Width = 30;
+            // 
+            // colExcludePattern
+            // 
+            this.colExcludePattern.HeaderText = "Exclude files";
+            this.colExcludePattern.Name = "colExcludePattern";
+            // 
+            // colBuildAction
+            // 
+            dataGridViewCellStyle2.NullValue = "None";
+            this.colBuildAction.DefaultCellStyle = dataGridViewCellStyle2;
+            this.colBuildAction.HeaderText = "Build action";
+            this.colBuildAction.Items.AddRange(new object[] {
+            "None",
+            "Compile",
+            "Content",
+            "Embedded Resource",
+            "AdditionalFiles",
+            "CodeAnalysisDictionary",
+            "ApplicationDefinition",
+            "Page",
+            "Resource",
+            "SplashScreen",
+            "DesignData",
+            "DesignDataWithDesignTimeCreatableTypes",
+            "EntityDeploy",
+            "XamlAppDef"});
+            this.colBuildAction.Name = "colBuildAction";
+            this.colBuildAction.Width = 150;
+            // 
+            // colCopyToOutput
+            // 
+            this.colCopyToOutput.HeaderText = "Copy to output";
+            this.colCopyToOutput.Name = "colCopyToOutput";
+            this.colCopyToOutput.Width = 50;
+            // 
+            // colFlatten
+            // 
+            this.colFlatten.HeaderText = "Flatten";
+            this.colFlatten.Name = "colFlatten";
+            this.colFlatten.Width = 50;
+            // 
+            // colTarget
+            // 
+            this.colTarget.HeaderText = "Target";
+            this.colTarget.Name = "colTarget";
+            this.colTarget.Width = 150;
+            // 
+            // colUseContentElement
+            // 
+            this.colUseContentElement.HeaderText = "To content element";
+            this.colUseContentElement.Name = "colUseContentElement";
+            this.colUseContentElement.Width = 70;
+            // 
+            // tabNuspec
+            // 
+            this.tabNuspec.Controls.Add(this.btSaveXMLChanges);
+            this.tabNuspec.Controls.Add(this.scintillaNuspecContents);
+            this.tabNuspec.Location = new System.Drawing.Point(4, 22);
+            this.tabNuspec.Name = "tabNuspec";
+            this.tabNuspec.Padding = new System.Windows.Forms.Padding(3);
+            this.tabNuspec.Size = new System.Drawing.Size(950, 369);
+            this.tabNuspec.TabIndex = 3;
+            this.tabNuspec.Text = ".nuspec contents";
+            this.tabNuspec.UseVisualStyleBackColor = true;
+            // 
+            // btSaveXMLChanges
+            // 
+            this.btSaveXMLChanges.Location = new System.Drawing.Point(6, 340);
+            this.btSaveXMLChanges.Name = "btSaveXMLChanges";
+            this.btSaveXMLChanges.Size = new System.Drawing.Size(160, 23);
+            this.btSaveXMLChanges.TabIndex = 1;
+            this.btSaveXMLChanges.Text = "Save changes";
+            this.btSaveXMLChanges.UseVisualStyleBackColor = true;
+            this.btSaveXMLChanges.Click += new System.EventHandler(this.btSaveXMLChanges_Click);
+            // 
+            // scintillaNuspecContents
+            // 
+            this.scintillaNuspecContents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.scintillaNuspecContents.Location = new System.Drawing.Point(6, 6);
+            this.scintillaNuspecContents.Name = "scintillaNuspecContents";
+            this.scintillaNuspecContents.Size = new System.Drawing.Size(938, 328);
+            this.scintillaNuspecContents.TabIndex = 0;
+            // 
+            // odIconFile
+            // 
+            this.odIconFile.Filter = "Image files|*.png;*.jpg;*.jpeg";
+            this.odIconFile.Title = "Select an image file for the icon";
+            // 
+            // tlpMainContainer
+            // 
+            this.tlpMainContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpMainContainer.ColumnCount = 1;
+            this.tlpMainContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMainContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMainContainer.Controls.Add(this.tlpProcessOutput, 0, 1);
+            this.tlpMainContainer.Controls.Add(this.tcMain, 0, 0);
+            this.tlpMainContainer.Location = new System.Drawing.Point(12, 27);
+            this.tlpMainContainer.Name = "tlpMainContainer";
+            this.tlpMainContainer.RowCount = 2;
+            this.tlpMainContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.tlpMainContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tlpMainContainer.Size = new System.Drawing.Size(964, 573);
+            this.tlpMainContainer.TabIndex = 4;
+            // 
+            // btSaveFileChanges
+            // 
+            this.btSaveFileChanges.Location = new System.Drawing.Point(6, 340);
+            this.btSaveFileChanges.Name = "btSaveFileChanges";
+            this.btSaveFileChanges.Size = new System.Drawing.Size(160, 23);
+            this.btSaveFileChanges.TabIndex = 2;
+            this.btSaveFileChanges.Text = "Save changes";
+            this.btSaveFileChanges.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 612);
-            this.Controls.Add(this.tcMain);
+            this.ClientSize = new System.Drawing.Size(988, 612);
+            this.Controls.Add(this.tlpMainContainer);
             this.Controls.Add(this.mnuMain);
-            this.Controls.Add(this.tlpProcessOutput);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.mnuMain;
             this.Name = "FormMain";
@@ -1183,8 +1302,9 @@
             this.tlpLicenseURL.PerformLayout();
             this.tabContent.ResumeLayout(false);
             this.tabContent.PerformLayout();
-            this.tabNuspec.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).EndInit();
+            this.tabNuspec.ResumeLayout(false);
+            this.tlpMainContainer.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1274,6 +1394,16 @@
         private System.Windows.Forms.Button btSaveXMLChanges;
         private System.Windows.Forms.Label lbFiles;
         private System.Windows.Forms.DataGridView dgvFiles;
+        private System.Windows.Forms.TableLayoutPanel tlpMainContainer;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colFile;
+        private System.Windows.Forms.DataGridViewButtonColumn colSelectFile;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colExcludePattern;
+        private System.Windows.Forms.DataGridViewComboBoxColumn colBuildAction;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colCopyToOutput;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colFlatten;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTarget;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colUseContentElement;
+        private System.Windows.Forms.Button btSaveFileChanges;
     }
 }
 

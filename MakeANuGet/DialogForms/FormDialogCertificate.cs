@@ -27,7 +27,7 @@ SOFTWARE.
 using System.IO;
 using System.Windows.Forms;
 
-namespace MakeANuGet
+namespace MakeANuGet.DialogForms
 {
     /// <summary>
     /// A dialog to fill code signing certificate details.

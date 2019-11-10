@@ -27,7 +27,7 @@ SOFTWARE.
 using System;
 using System.IO;
 
-namespace MakeANuGet
+namespace MakeANuGet.HelperClasses
 {
     /// <summary>
     /// A class to help with relative paths.

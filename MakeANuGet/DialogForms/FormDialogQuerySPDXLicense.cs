@@ -26,8 +26,9 @@ SOFTWARE.
 
 using System;
 using System.Windows.Forms;
+using MakeANuGet.HelperClasses;
 
-namespace MakeANuGet
+namespace MakeANuGet.DialogForms
 {
     /// <summary>
     /// A dialog to select a SPDX license from a list.

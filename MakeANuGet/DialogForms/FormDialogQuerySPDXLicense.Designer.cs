@@ -1,4 +1,4 @@
-﻿namespace MakeANuGet
+﻿namespace MakeANuGet.DialogForms
 {
     partial class FormDialogQuerySPDXLicense
     {

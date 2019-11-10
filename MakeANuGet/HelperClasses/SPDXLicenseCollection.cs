@@ -27,7 +27,7 @@ SOFTWARE.
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MakeANuGet
+namespace MakeANuGet.HelperClasses
 {
     /// <summary>
     /// A class containing a single SPDX license entry (https://spdx.org/licenses/).

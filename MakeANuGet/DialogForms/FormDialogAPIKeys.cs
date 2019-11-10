@@ -27,7 +27,7 @@ SOFTWARE.
 using System;
 using System.Windows.Forms;
 
-namespace MakeANuGet
+namespace MakeANuGet.DialogForms
 {
     /// <summary>
     /// A dialog for saving or changing your NuGet API keys.

@@ -13,13 +13,7 @@
     <copyright>Copyright © VPKSoft 2019</copyright>
     <tags>test void empty useless vpksoft</tags>
     <icon>nuget-package-logo.png</icon>
-    <license type="expression">MIT-0</license>
-    <dependencies>
-      <group targetFramework=".NETFramework4.7">
-        <dependency id="$id$" version="$version$" />
-      </group>
-      <group targetFramework=".NETFramework4.7.2" />
-    </dependencies>
+    <license type="expression">MIT</license>
   </metadata>
   <files>
     <file src="NugetIcons\nuget-package-logo.png" target="" />

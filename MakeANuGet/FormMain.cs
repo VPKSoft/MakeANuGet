@@ -35,7 +35,10 @@ using System.Diagnostics;
 using System.Threading;
 using System.Reflection;
 using System.Xml.Linq;
+using MakeANuGet.DialogForms;
+using MakeANuGet.HelperClasses;
 using VPKSoft.ScintillaLexers;
+using static MakeANuGet.HelperClasses.XmlUtilities;
 
 namespace MakeANuGet
 {
@@ -44,53 +47,6 @@ namespace MakeANuGet
     /// </summary>
     public partial class FormMain : Form
     {
-        // use the self developed "not a markup language"..
-        private readonly VPKNml vnml;
-
-        // the settings file name (to store the API key only)..
-        private readonly string settingsFile;
-
-        // the C# project file (*.cs) to make the NuGet from..
-        private string csprojFile;
-
-        // the .nuspec file for the NuGet package generation..
-        private string nuspecFile;
-
-        // the .nuspec file is a XML document..
-        private XDocument nuspec;
-
-        // a binary path for the release folder of your library..
-        private string binaryPath;
-
-        // an assembly name for your library..
-        private string assemblyName;
-
-        // the assembly which from which to NuGet package is to be created..
-        private Assembly assemblyNuget;
-
-        // your nuget.org API key
-        private string apiKey;
-
-        // ReSharper disable twice CommentTypo
-        // your apiint.nugettest.org API key
-        private string testApiKey;
-
-        // a path to the common settings .vnml file..
-        // ReSharper disable once IdentifierTypo
-        private readonly string vmmlPath;
-
-        // a password for a certificate file to sign the nuget package..
-        private string certificatePassword;
-
-        // an URL for the certificate time stamp server..
-        private string certificateTimeStampServer;
-
-        // the certificate file to be used for signing the nuget package..
-        private string certificateFile;
-
-        // a value indicating whether to sign the nuget package with a certificate
-        private bool signPackage;
-
         /// <summary>
         /// The main form for the software.
         /// </summary>
@@ -141,9 +97,61 @@ namespace MakeANuGet
             ScintillaLexers.CreateLexer(scintillaNuspecContents,
                 LexerEnumerations.LexerType.Xml);
 
+            // this is suitable for XML files..
+            scintillaNuspecContents.TabWidth = 2;
+            scintillaNuspecContents.UseTabs = false;
+
             SetStepZero();
         }
 
+        #region PrivateFields
+        // use the self developed "not a markup language"..
+        private readonly VPKNml vnml;
+
+        // the settings file name (to store the API key only)..
+        private readonly string settingsFile;
+
+        // the C# project file (*.cs) to make the NuGet from..
+        private string csprojFile;
+
+        // the .nuspec file for the NuGet package generation..
+        private string nuspecFile;
+
+        // the .nuspec file is a XML document..
+        private XDocument nuspec;
+
+        // a binary path for the release folder of your library..
+        private string binaryPath;
+
+        // an assembly name for your library..
+        private string assemblyName;
+
+        // the assembly which from which to NuGet package is to be created..
+        private Assembly assemblyNuget;
+
+        // your nuget.org API key
+        private string apiKey;
+
+        // ReSharper disable twice CommentTypo
+        // your apiint.nugettest.org API key
+        private string testApiKey;
+
+        // a path to the common settings .vnml file..
+        // ReSharper disable once IdentifierTypo
+        private readonly string vmmlPath;
+
+        // a password for a certificate file to sign the nuget package..
+        private string certificatePassword;
+
+        // an URL for the certificate time stamp server..
+        private string certificateTimeStampServer;
+
+        // the certificate file to be used for signing the nuget package..
+        private string certificateFile;
+
+        // a value indicating whether to sign the nuget package with a certificate
+        private bool signPackage;
+        #endregion
 
         #region ValidityChecks
         /// <summary>
@@ -288,107 +296,7 @@ namespace MakeANuGet
         }
         #endregion
 
-        // a user wishes to open a project (.cs) to generate a NuGet package..
-        private void mnuOpenProject_Click(object sender, EventArgs e)
-        {
-            // display an open file dialog for the .csproj file..
-            if (odCSProj.ShowDialog() == DialogResult.OK)
-            {
-                // clear the data..
-                SetStepZero();
-            
-                // save the file name..
-                csprojFile = odCSProj.FileName;
-
-                // set the form's title..
-                Text = $@"Make a NuGet - [{csprojFile}]";
-
-                // get a file name for the .nuspec file..
-                nuspecFile = Path.ChangeExtension(csprojFile, ".nuspec");
-
-                // load the .csproj file..
-                if (csprojFile != null)
-                {
-                    // create a XDocument class instance..
-                    var csproj = XDocument.Load(csprojFile);
-                    XNamespace xNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
-                    // set the initial directory for the 
-                    odAnyFile.InitialDirectory = Path.GetDirectoryName(csprojFile);
-                    
-                    var propertyGroups = csproj.Root?.Elements(xNamespace + "PropertyGroup");
-
-                    // get the assembly name and the binary path from the .csproj file for the NuGet generation..
-                    if (propertyGroups != null)
-                    {
-                        foreach (XElement element in propertyGroups)
-                        {
-                            var propertyGroupElements = element.Elements(xNamespace + "AssemblyName");
-
-                            if (assemblyName == null)
-                            {
-                                foreach (var propertyGroupElement in propertyGroupElements)
-                                {
-                                    if (assemblyName == null)
-                                    {
-                                        assemblyName = propertyGroupElement.Value;
-                                    }
-                                }
-                            }
-
-                            if (binaryPath == null)
-                            {
-                                //foreach (var conditionAttribute in conditionAttributes)
-                                var conditionAttribute = element.Attribute("Condition");
-                                {
-                                    if (conditionAttribute?.Value.Trim(' ') ==
-                                        " '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ".Trim(' '))
-                                    {
-                                        binaryPath = element.Element(xNamespace + "OutputPath")?.Value;
-                                    }
-                                }
-                            }
-
-                            if (assemblyName != null && binaryPath != null)
-                            {
-                                break;
-                            }
-                        }
-                    }
-
-                    var csprojPath = Path.GetDirectoryName(csprojFile);
-
-                    // combine the assembly DLL name..
-                    if (binaryPath == null || csprojPath == null)
-                    {
-                        return;
-                    }
-                    binaryPath = Path.Combine(csprojPath, binaryPath, assemblyName + ".dll");
-
-                    // load the assembly to get data from it..
-                    assemblyNuget = Assembly.LoadFile(binaryPath);
-
-                    // if the .nuspec already exists, then load it..
-                    if (File.Exists(nuspecFile))
-                    {
-                        if (nuspecFile != null)
-                        {
-                            nuspec = XDocument.Load(nuspecFile);
-                        }
-
-                        SetGuiEnabled(true);
-
-                        btGenerateNugetPackage.Enabled = true; // and enabled the next step..
-
-                        DisplayXmlData(); // display the loaded data..
-                    }
-
-                    // enable the NuGet generation button..
-                    btGenerateNuget.Enabled = true;
-
-                }
-            }
-        }
-
+        #region Settings
         // ReSharper disable once CommentTypo
         /// <summary>
         /// Gets or sets the assembly copyright value. For the getter the copyright is first tried to be gotten from the actual assembly 
@@ -476,7 +384,9 @@ namespace MakeANuGet
                 vnmlDefaults.Save(vmmlPath);
             }
         }
+        #endregion
 
+        #region XmlData
         /// <summary>
         /// Displays the relevant contents of the .nuspec file.
         /// </summary>
@@ -493,6 +403,11 @@ namespace MakeANuGet
                 tbReleaseNotes.Text = metadataElement?.Element("releaseNotes")?.Value;
                 tbCopyright.Text = metadataElement?.Element("copyright")?.Value;
                 tbDescription.Text = metadataElement?.Element("description")?.Value;
+
+                tbIcon.Text = metadataElement?.Element("icon")?.Value;
+                var iconFileElement =  GetFileElementSourceAndTarget(nuspec, tbIcon.Text);
+                tbIcon.Tag = iconFileElement.source;
+                tbIconTarget.Text = iconFileElement.target;
 
                 var boolString = metadataElement?.Element("requireLicenseAcceptance")?.Value; 
                 cbRequireLicenseAcceptance.Checked = boolString != null && bool.Parse(boolString);
@@ -519,8 +434,8 @@ namespace MakeANuGet
                             licenses.Add(FormDialogQuerySPDXLicense.SPDXLicenseCollection.GetLicenseByIdentifier(licenseId));
                         }
 
-                        // set the text "as is"..
-                        tbLicenseFile.Text = licenseElement.Value;
+                        // set the text..
+                        tbLicenseFile.Text = SPDXLicenseCollection.ConstructLicenseString(licenses);
 
                         // save the licenses to the text box's Tag property..
                         tbLicenseFile.Tag = licenses;
@@ -533,43 +448,14 @@ namespace MakeANuGet
 
                         // the files node in the .nuspec file must contain a relative path the license file
                         // so do try to get it..
-                        tbLicenseFile.Tag = GetLicenseFileNode(nuspec, licenseElement.Value);
+                        var fileElement = GetFileElementSourceAndTarget(nuspec, licenseElement.Value);
+
+                        tbLicenseFile.Tag = fileElement.source;
+                        tbLicenseFileTarget.Text = fileElement.target;
                     }
-
-                }
-            }
-        }
-
-        private void SetSimpleElement(string elementName, string value)
-        {
-            if (nuspec != null)
-            {
-                var splitName = elementName.Split(';');
-                bool deleteEmptyElement = false;
-
-                if (splitName.Length > 1)
-                {
-                    elementName = splitName[0];
-                    deleteEmptyElement = splitName[1] == "1";
                 }
 
-
-                
-                var element = nuspec.Root?.Element("metadata")?.Element(elementName);
-
-                if (string.IsNullOrEmpty(value) && deleteEmptyElement)
-                {
-                    element?.Remove();
-                    return;
-                }
-
-                if (element == null)
-                {
-                    element = new XElement(elementName);
-                    nuspec.Root?.Element("metadata")?.Add(element);
-                }
-
-                element.Value = value ?? string.Empty;
+                DisplayFileElements();
             }
         }
 
@@ -583,81 +469,39 @@ namespace MakeANuGet
         }
 
         /// <summary>
-        /// Gets the file element containing the license file in a .nuspec file from the files section.
+        /// Displays the file elements defined in the .nuspec file.
         /// </summary>
-        /// <param name="document">An XML document with the data (.nuspec).</param>
-        /// <param name="fileName">The file name of the license file.</param>
-        /// <returns>A relative path contained in the XML node: files.</returns>
-        private string GetLicenseFileNode(XDocument document, string fileName)
+        private void DisplayFileElements()
         {
-            var files =
-                document.Root?.Element("files")?.Elements("file").Where(f => f.Attribute("src") != null);
-
-            var licenseFile = files?.FirstOrDefault(f =>
-                // ReSharper disable once PossibleNullReferenceException (the inspection for null was made in the previous line)..
-                f.Attribute("src").Value.EndsWith(fileName) &&
-                string.IsNullOrEmpty(f.Attribute("target")?.Value));
-
-            return licenseFile?.Attribute("src")?.Value;
-
-            // fail to null value..
-        }
-
-        // a user decided to close the form, so save some setting which
-        // are presumed to be constant for the developer..
-        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            vnml["api", "key"] = apiKey; // the NuGet API key..
-            // ReSharper disable once StringLiteralTypo
-            vnml["apitest", "key"] = testApiKey; // the test NuGet API key..
-
-            // the certificate settings..
-            vnml["certificate", "password"] = certificatePassword;
-            vnml["certificate", "file"] = certificateFile;
-            vnml["certificate", "timeStampServer"] = certificateTimeStampServer;
-            vnml["certificate", "use"] = signPackage;
-
-            vnml.Save(settingsFile);
-
-            // the assembly copyright..
-            AssemblyCopyright = tbCopyright.Text;
-
-            // the need for a "consumer" to accept the license..
-            AssemblyMustAcceptLicense = cbRequireLicenseAcceptance.Checked;
-
-            // an icon URL for the NuGet..
-            AssemblyIconUrl = tbIconURL.Text;
-        }
-
-        // a user wished to generate a .nuspec file..
-        private void btGenerateNuget_Click(object sender, EventArgs e)
-        {
-            // ..so do try to generate it..
-            RunSpecNuGet(" spec " + "\"" + csprojFile + "\"" + (cbForceNuspec.Checked ? " -Force" : string.Empty));
-        }
-
-        // a user wished to generate a NuGet package..
-        private void btGenerateNugetPackage_Click(object sender, EventArgs e)
-        {
-            // validate first..
-            // TODO::add extra validation..
-            if (ValidateStepTwo())
+            dgvFiles.Rows.Clear();
+            if (nuspec != null)
             {
-                // save the .nuspec contents..
-                SaveXmlData();
-
-                // generate a NuGet package..
-                if (RunSpecNuGet(" pack -Prop Configuration=Release"))
+                var dataEntries = GetFileElementData(nuspec);
+                foreach (var dataEntry in dataEntries)
                 {
-                    // if successful, enable the push NuGet button..
-                    btPushNugetPackage.Enabled = true;
+                    var rowIndex = dgvFiles.Rows.Add();
+                    dgvFiles.Rows[rowIndex].Cells[colFile.Index].Value = dataEntry.SrcAttribute;
+                    dgvFiles.Rows[rowIndex].Cells[colTarget.Index].Value = dataEntry.TargetAttribute;
+                    dgvFiles.Rows[rowIndex].Cells[colExcludePattern.Index].Value = dataEntry.ExcludeAttribute;
+                    dgvFiles.Rows[rowIndex].Cells[colUseContentElement.Index].Value = false;
+                }
 
-                    // sign the package if set..
-                    SignPackage();
+                var contentFilesEntries = GetContentFileElementData(nuspec);
+                foreach (var contentFilesEntry in contentFilesEntries)
+                {
+                    var rowIndex = dgvFiles.Rows.Add();
+                    dgvFiles.Rows[rowIndex].Cells[colFile.Index].Value = contentFilesEntry.IncludeAttribute;
+                    dgvFiles.Rows[rowIndex].Cells[colExcludePattern.Index].Value = contentFilesEntry.ExcludeAttribute;
+                    dgvFiles.Rows[rowIndex].Cells[colBuildAction.Index].Value = contentFilesEntry.BuildActionAttribute;
+                    dgvFiles.Rows[rowIndex].Cells[colCopyToOutput.Index].Value = contentFilesEntry.CopyToOutputAttribute;
+                    dgvFiles.Rows[rowIndex].Cells[colFlatten.Index].Value = contentFilesEntry.FlattenAttribute;
+                    dgvFiles.Rows[rowIndex].Cells[colUseContentElement.Index].Value = true;
                 }
             }
         }
+        #endregion
 
+        #region NuGetProcess
         // gets the path to the generated .nupkg file..
         private string GetNugetFile()
         {
@@ -1011,8 +855,165 @@ namespace MakeANuGet
             }
             return returnValue; // return the result (true == success)..
         }
+        #endregion
 
         #region InternalEvents
+        // a user wishes to open a project (.cs) to generate a NuGet package..
+        private void mnuOpenProject_Click(object sender, EventArgs e)
+        {
+            // display an open file dialog for the .csproj file..
+            if (odCSProj.ShowDialog() == DialogResult.OK)
+            {
+                // clear the data..
+                SetStepZero();
+            
+                // save the file name..
+                csprojFile = odCSProj.FileName;
+
+                // set the form's title..
+                Text = $@"Make a NuGet - [{csprojFile}]";
+
+                // get a file name for the .nuspec file..
+                nuspecFile = Path.ChangeExtension(csprojFile, ".nuspec");
+
+                // load the .csproj file..
+                if (csprojFile != null)
+                {
+                    // create a XDocument class instance..
+                    var csproj = XDocument.Load(csprojFile);
+                    XNamespace xNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
+                    // set the initial directory for the 
+                    odAnyFile.InitialDirectory = Path.GetDirectoryName(csprojFile);
+                    
+                    var propertyGroups = csproj.Root?.Elements(xNamespace + "PropertyGroup");
+
+                    // get the assembly name and the binary path from the .csproj file for the NuGet generation..
+                    if (propertyGroups != null)
+                    {
+                        foreach (XElement element in propertyGroups)
+                        {
+                            var propertyGroupElements = element.Elements(xNamespace + "AssemblyName");
+
+                            if (assemblyName == null)
+                            {
+                                foreach (var propertyGroupElement in propertyGroupElements)
+                                {
+                                    if (assemblyName == null)
+                                    {
+                                        assemblyName = propertyGroupElement.Value;
+                                    }
+                                }
+                            }
+
+                            if (binaryPath == null)
+                            {
+                                //foreach (var conditionAttribute in conditionAttributes)
+                                var conditionAttribute = element.Attribute("Condition");
+                                {
+                                    if (conditionAttribute?.Value.Trim(' ') ==
+                                        " '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ".Trim(' '))
+                                    {
+                                        binaryPath = element.Element(xNamespace + "OutputPath")?.Value;
+                                    }
+                                }
+                            }
+
+                            if (assemblyName != null && binaryPath != null)
+                            {
+                                break;
+                            }
+                        }
+                    }
+
+                    var csprojPath = Path.GetDirectoryName(csprojFile);
+
+                    // combine the assembly DLL name..
+                    if (binaryPath == null || csprojPath == null)
+                    {
+                        return;
+                    }
+                    binaryPath = Path.Combine(csprojPath, binaryPath, assemblyName + ".dll");
+
+                    // load the assembly to get data from it..
+                    assemblyNuget = Assembly.LoadFile(binaryPath);
+
+                    // if the .nuspec already exists, then load it..
+                    if (File.Exists(nuspecFile))
+                    {
+                        if (nuspecFile != null)
+                        {
+                            nuspec = XDocument.Load(nuspecFile);
+                        }
+
+                        SetGuiEnabled(true);
+
+                        btGenerateNugetPackage.Enabled = true; // and enabled the next step..
+
+                        DisplayXmlData(); // display the loaded data..
+                    }
+
+                    // enable the NuGet generation button..
+                    btGenerateNuget.Enabled = true;
+
+                }
+            }
+        }
+
+        // a user decided to close the form, so save some setting which
+        // are presumed to be constant for the developer..
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            vnml["api", "key"] = apiKey; // the NuGet API key..
+            // ReSharper disable once StringLiteralTypo
+            vnml["apitest", "key"] = testApiKey; // the test NuGet API key..
+
+            // the certificate settings..
+            vnml["certificate", "password"] = certificatePassword;
+            vnml["certificate", "file"] = certificateFile;
+            vnml["certificate", "timeStampServer"] = certificateTimeStampServer;
+            vnml["certificate", "use"] = signPackage;
+
+            vnml.Save(settingsFile);
+
+            // the assembly copyright..
+            AssemblyCopyright = tbCopyright.Text;
+
+            // the need for a "consumer" to accept the license..
+            AssemblyMustAcceptLicense = cbRequireLicenseAcceptance.Checked;
+
+            // an icon URL for the NuGet..
+            AssemblyIconUrl = tbIconURL.Text;
+        }
+
+        // a user wished to generate a .nuspec file..
+        private void btGenerateNuget_Click(object sender, EventArgs e)
+        {
+            // ..so do try to generate it..
+            RunSpecNuGet(" spec " + "\"" + csprojFile + "\"" + (cbForceNuspec.Checked ? " -Force" : string.Empty));
+        }
+
+        // a user wished to generate a NuGet package..
+        private void btGenerateNugetPackage_Click(object sender, EventArgs e)
+        {
+            // validate first..
+            // TODO::add extra validation..
+            if (ValidateStepTwo())
+            {
+                // save the .nuspec contents..
+                SaveXmlData();
+
+                // generate a NuGet package..
+                if (RunSpecNuGet(" pack -Prop Configuration=Release"))
+                {
+                    // if successful, enable the push NuGet button..
+                    btPushNugetPackage.Enabled = true;
+
+                    // sign the package if set..
+                    SignPackage();
+                }
+            }
+        }
+
         // a user wishes to fill the "common" fields with default values..
         private void mnuFillWithDefaults_Click(object sender, EventArgs e)
         {
@@ -1041,7 +1042,7 @@ namespace MakeANuGet
                 tbLicenseFileTarget.Text = string.Empty;
             }
 
-            SetLicenseElementSpdx();
+            SetLicenseElementSpdx(nuspec, tbLicenseFile.Tag);
         }
 
         // a user wishes to add to an existing license (https://spdx.org/spdx-specification-21-web-version#h.jxpfx0ykyb60)..
@@ -1085,7 +1086,7 @@ namespace MakeANuGet
                     tbLicenseFileTarget.Text = string.Empty;
                 }
             }
-            SetLicenseElementSpdx();
+            SetLicenseElementSpdx(nuspec, tbLicenseFile.Tag);
         }
 
         // a user wishes to use a file for a license..
@@ -1095,127 +1096,27 @@ namespace MakeANuGet
             {
                 if (odAnyFile.ShowDialog() == DialogResult.OK)
                 {
-                    SetLicenseElementFile(odAnyFile.FileName);
+                    SetLicenseElementFile(nuspec, odAnyFile.FileName, tbLicenseFileTarget.Text, nuspecFile);
 
                     string relativePath =
                         RelativePath.GetRelativePath(odAnyFile.FileName, nuspecFile);
 
                     tbLicenseFile.Tag = relativePath;
                     tbLicenseFile.Text = Path.GetFileName(odAnyFile.FileName);
-                    tbLicenseFileTarget.Text = relativePath;
+                    tbLicenseFileTarget.Text = string.Empty;
                 }
             }
             else if (sender.Equals(btIconFile) || sender.Equals(tbIconTarget))
             {
                 if (odIconFile.ShowDialog() == DialogResult.OK)
                 {
-                    SetIconElementFile(odIconFile.FileName);
+                    SetIconElementFile(nuspec, odIconFile.FileName, tbIconTarget.Text, nuspecFile);
                     string relativePath =
                         RelativePath.GetRelativePath(odIconFile.FileName, nuspecFile);
 
                     tbIcon.Tag = relativePath;
                     tbIcon.Text = Path.GetFileName(odIconFile.FileName);
                     tbIconTarget.Text = string.Empty;
-                }
-            }
-        }
-
-        private void SetLicenseElementSpdx()
-        {
-            if (nuspec != null)
-            {
-                // the license data if any is stored in the tag of the
-                // license text box..
-                object license = tbLicenseFile.Tag;
-
-                if (!(license is List<SPDXLicense>))
-                {
-                    return;
-                }
-
-                // get the list of licenses from the tag..
-                List<SPDXLicense> licenses = (List<SPDXLicense>)license;
-
-                var element = nuspec.Root?.Element("metadata")?.Element("license");
-
-                var elementType = element?.Attribute("type")?.Value;
-                var elementFile = element?.Value;
-
-                if (elementType != null && elementType == "file")
-                {
-                    elementFile = Path.GetFileName(elementFile);
-                    var fileElements = nuspec.Root?.Element("files")?.Elements("file");
-
-                    if (fileElements != null)
-                    {
-                        var licenseFileElement =
-                            fileElements.FirstOrDefault(f =>
-                                (f.Attribute("src")?.Value ?? string.Empty).EndsWith(
-                                    elementFile));
-
-                        licenseFileElement?.Remove();
-                    }
-                }
-
-                element?.Remove();
-
-                // select the license identifiers..
-                var licenseStrings = licenses.Select(f => f.Identifier);
-
-                element = new XElement("license", new XAttribute("type", "expression"))
-                {
-                    Value = string.Join(" OR ", licenseStrings),
-                };
-
-                nuspec.Root?.Element("metadata")?.Add(element);
-            }
-        }
-
-        private void SetLicenseElementFile(string fileName)
-        {
-            if (nuspec != null)
-            {
-                var element = nuspec.Root?.Element("files");
-
-                fileName = RelativePath.GetRelativePath(fileName, nuspecFile);
-
-                if (element == null)
-                {
-                    var fileElement = new XElement("files");
-                    fileElement.Add(new XElement("file", new XAttribute("src", fileName), new XAttribute("target", "")));
-                    nuspec.Root?.Add(fileElement);
-                }
-
-                element = nuspec.Root?.Element("metadata")?.Element("license");
-                element?.Remove();
-
-                element = new XElement("license", new XAttribute("type", "file"));
-                var fileNameNoPath = Path.GetFileName(fileName);
-                element.Value = fileNameNoPath ?? string.Empty;
-                nuspec.Root?.Element("metadata")?.Add(element);
-            }
-        }
-
-        private void SetIconElementFile(string fileName)
-        {
-            if (nuspec != null)
-            {
-                var element = nuspec.Root?.Element("files");
-
-                fileName = RelativePath.GetRelativePath(fileName, nuspecFile);
-
-                if (element == null)
-                {
-                    var fileElement = new XElement("files");
-                    fileElement.Add(new XElement("file", new XAttribute("src", fileName), new XAttribute("target", tbIconTarget.Text)));
-                    nuspec.Root?.Add(fileElement);
-                }
-
-                element = nuspec.Root?.Element("metadata")?.Element("icon");
-                if (element == null)
-                {
-                    element = new XElement("icon") {Value = fileName};
-                    nuspec.Root?.Element("metadata")?.Add(element);
                 }
             }
         }
@@ -1295,7 +1196,6 @@ namespace MakeANuGet
 
             signPackage = checkBox.Checked;
         }
-        #endregion
 
         private void mnuTest_Click(object sender, EventArgs e)
         {
@@ -1331,7 +1231,7 @@ namespace MakeANuGet
         private void tbSimpleElement_TextChanged(object sender, EventArgs e)
         {
             var textBox = (TextBox) sender;
-            SetSimpleElement(textBox.Tag.ToString(), textBox.Text);
+            SetSimpleElement(nuspec, textBox.Tag.ToString(), textBox.Text);
         }
 
         private void lbCopyright_Click(object sender, EventArgs e)
@@ -1342,7 +1242,7 @@ namespace MakeANuGet
         private void cbRequireLicenseAcceptance_CheckedChanged(object sender, EventArgs e)
         {
             var checkBox = (CheckBox) sender;
-            SetSimpleElement(checkBox.Tag.ToString(), checkBox.Checked.ToString().ToLower());
+            SetSimpleElement(nuspec, checkBox.Tag.ToString(), checkBox.Checked.ToString().ToLower());
         }
 
         private void pnToggleApiKeyVisible_Click(object sender, EventArgs e)
@@ -1374,5 +1274,43 @@ namespace MakeANuGet
                 }
             }
         }
+        private void dgvFiles_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var dataGridView = (DataGridView)sender;
+
+            if (dataGridView.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
+                e.RowIndex >= 0)
+            {
+                if (odAnyFile.ShowDialog() == DialogResult.OK)
+                {
+                    var relativePath = RelativePath.GetRelativePath(odAnyFile.FileName, nuspecFile);
+                    dataGridView.Rows[e.RowIndex].Cells[colFile.Index].Value = relativePath;
+                }
+            }
+        }
+        private void dgvFiles_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            var dataGridView = (DataGridView) sender;
+            if (dataGridView.Rows[e.RowIndex].Cells[colUseContentElement.Index].Value is bool isContentElementRow)
+            {
+                if (!isContentElementRow)
+                {
+                    if (e.ColumnIndex == colBuildAction.Index ||
+                        e.ColumnIndex == colCopyToOutput.Index ||
+                        e.ColumnIndex == colFlatten.Index)
+                    {
+                        e.Cancel = true;
+                    }
+                }
+                else
+                {
+                    if (e.ColumnIndex == colTarget.Index)
+                    {
+                        e.Cancel = true;
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }

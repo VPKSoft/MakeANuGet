@@ -68,22 +68,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FormDialogAPIKeys.cs">
+    <Compile Include="DialogForms\FormDialogAPIKeys.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormDialogAPIKeys.Designer.cs">
+    <Compile Include="DialogForms\FormDialogAPIKeys.Designer.cs">
       <DependentUpon>FormDialogAPIKeys.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormDialogCertificate.cs">
+    <Compile Include="DialogForms\FormDialogCertificate.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormDialogCertificate.Designer.cs">
+    <Compile Include="DialogForms\FormDialogCertificate.Designer.cs">
       <DependentUpon>FormDialogCertificate.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormDialogQuerySPDXLicense.cs">
+    <Compile Include="DialogForms\FormDialogQuerySPDXLicense.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormDialogQuerySPDXLicense.Designer.cs">
+    <Compile Include="DialogForms\FormDialogQuerySPDXLicense.Designer.cs">
       <DependentUpon>FormDialogQuerySPDXLicense.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMain.cs">
@@ -92,17 +92,20 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="HelperClasses\NuspecFileContentElement.cs" />
+    <Compile Include="HelperClasses\NuspecFileElement.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RelativePath.cs" />
-    <Compile Include="SPDXLicenseCollection.cs" />
-    <EmbeddedResource Include="FormDialogAPIKeys.resx">
+    <Compile Include="HelperClasses\RelativePath.cs" />
+    <Compile Include="HelperClasses\SPDXLicenseCollection.cs" />
+    <Compile Include="HelperClasses\XmlUtilities.cs" />
+    <EmbeddedResource Include="DialogForms\FormDialogAPIKeys.resx">
       <DependentUpon>FormDialogAPIKeys.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormDialogCertificate.resx">
+    <EmbeddedResource Include="DialogForms\FormDialogCertificate.resx">
       <DependentUpon>FormDialogCertificate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormDialogQuerySPDXLicense.resx">
+    <EmbeddedResource Include="DialogForms\FormDialogQuerySPDXLicense.resx">
       <DependentUpon>FormDialogQuerySPDXLicense.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
@@ -151,5 +154,6 @@
     <Content Include="setup_version_maintenance.exe" />
     <Content Include="VPKSoft.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
