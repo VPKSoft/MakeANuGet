@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
 using System.Xml.Linq;
 
 namespace MakeANuGet.HelperClasses
@@ -276,13 +277,18 @@ namespace MakeANuGet.HelperClasses
         /// <summary>
         /// Gets the files element entries from the contentFiles element from a .nuspec XML document.
         /// </summary>
-        /// <param name="nuspec">The nuspec.</param>
+        /// <param name="nuspec">The contents of the .nuspec file in a <see cref="XDocument"/> class instance.</param>
         /// <returns>System.Collections.Generic.List&lt;MakeANuGet.HelperClasses.NuspecFileContentElement&gt; class instances containing the files elements.</returns>
         public static List<NuspecFileContentElement> GetContentFileElementData(XDocument nuspec)
         {
             bool BoolAttributeValue(string value)
             {
                 return value != null && bool.Parse(value);
+            }
+
+            string DefaultBuildAction(string value)
+            {
+                return value ?? "None";
             }
 
             List<NuspecFileContentElement> result = new List<NuspecFileContentElement>();
@@ -297,7 +303,7 @@ namespace MakeANuGet.HelperClasses
                     {
                         IncludeAttribute = filesElement.Attribute("include")?.Value,
                         ExcludeAttribute = filesElement.Attribute("exclude")?.Value,
-                        BuildActionAttribute = filesElement.Attribute("buildAction")?.Value,
+                        BuildActionAttribute = DefaultBuildAction(filesElement.Attribute("buildAction")?.Value),
                         CopyToOutputAttribute = BoolAttributeValue(filesElement.Attribute("copyToOutput")?.Value),
                         FlattenAttribute = BoolAttributeValue(filesElement.Attribute("flatten")?.Value),
                     });
@@ -305,6 +311,102 @@ namespace MakeANuGet.HelperClasses
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Updates the contentFiles element and the files element of the .nuspec file.
+        /// </summary>
+        /// <param name="nuspec">The contents of the .nuspec file in a <see cref="XDocument"/> class instance.</param>
+        /// <param name="contentElements">The elements to add to the contentFiles element.</param>
+        /// <param name="fileElements">The elements to add to the files element.</param>
+        public static void UpdateContentFilesAndFiles(XDocument nuspec, List<NuspecFileContentElement> contentElements,
+            List<NuspecFileElement> fileElements)
+        {
+            void ConditionalAddAttribute(List<XAttribute> attributes, string name, string value)
+            {
+                if (value != null)
+                {
+                    attributes.Add(new XAttribute(name, value));
+                }
+            }
+
+            var element = nuspec.Root?.Element("metadata")?.Element("contentFiles");
+            if (element == null)
+            {
+                element = new XElement("contentFiles");
+                nuspec.Root?.Element("metadata")?.Add(element);
+            }
+            else
+            {
+                if (contentElements.Count == 0)
+                {
+                    element.Remove();
+                }
+                else
+                {
+                    element.Remove();
+                    element = new XElement("contentFiles");
+                    nuspec.Root?.Element("metadata")?.Add(element);
+                }
+            }
+
+            foreach (var contentElement in contentElements)
+            {
+                List<XAttribute> attributes = new List<XAttribute>();
+                if (contentElement.IncludeAttribute == null)
+                {
+                    break;
+                }
+
+                ConditionalAddAttribute(attributes, "include", contentElement.IncludeAttribute);
+                ConditionalAddAttribute(attributes, "exclude", contentElement.ExcludeAttribute);
+                ConditionalAddAttribute(attributes, "buildAction", contentElement.BuildActionAttribute);
+
+                if (contentElement.CopyToOutputAttribute)
+                {
+                    attributes.Add(new XAttribute("copyToOutput", contentElement.CopyToOutputAttribute.ToString().ToLower()));
+                }
+                if (contentElement.FlattenAttribute)
+                {
+                    attributes.Add(new XAttribute("flatten", contentElement.FlattenAttribute.ToString().ToLower()));
+                }
+
+                element.Add(new XElement("files", attributes.ToArray()));
+            }
+
+            element = nuspec.Root?.Element("files");
+            if (element == null)
+            {
+                element = new XElement("files");
+                nuspec.Root?.Add(element);
+            }
+            else
+            {
+                if (fileElements.Count == 0)
+                {
+                    element.Remove();
+                }
+                else
+                {
+                    element.Remove();
+                    element = new XElement("files");
+                    nuspec.Root?.Add(element);
+                }
+            }
+
+            foreach (var fileElement in fileElements)
+            {
+                List<XAttribute> attributes = new List<XAttribute>();
+                if (fileElement.SrcAttribute == null)
+                {
+                    break;
+                }
+
+                ConditionalAddAttribute(attributes, "src", fileElement.SrcAttribute);
+                ConditionalAddAttribute(attributes, "target", fileElement.TargetAttribute);
+                ConditionalAddAttribute(attributes, "exclude", fileElement.ExcludeAttribute);
+                element.Add(new XElement("file", attributes.ToArray()));
+            }
         }
     }
 }

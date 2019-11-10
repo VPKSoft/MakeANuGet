@@ -14,6 +14,9 @@
     <tags>test void empty useless vpksoft</tags>
     <icon>nuget-package-logo.png</icon>
     <license type="expression">MIT</license>
+    <contentFiles>
+      <files include="MakeANugetTest.cs" buildAction="Content" copyToOutput="true" />
+    </contentFiles>
   </metadata>
   <files>
     <file src="NugetIcons\nuget-package-logo.png" target="" />

@@ -108,6 +108,12 @@
             this.tbLicenseUrl = new System.Windows.Forms.TextBox();
             this.btClearLicenseUrl = new System.Windows.Forms.Button();
             this.tabContent = new System.Windows.Forms.TabPage();
+            this.lbHelpLink2 = new System.Windows.Forms.Label();
+            this.lbAnd = new System.Windows.Forms.Label();
+            this.lbHelpLink1 = new System.Windows.Forms.Label();
+            this.lbForHelp = new System.Windows.Forms.Label();
+            this.btUndoFileChanges = new System.Windows.Forms.Button();
+            this.btSaveFileChanges = new System.Windows.Forms.Button();
             this.lbFiles = new System.Windows.Forms.Label();
             this.dgvFiles = new System.Windows.Forms.DataGridView();
             this.colFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -124,7 +130,6 @@
             this.odIconFile = new System.Windows.Forms.OpenFileDialog();
             this.ttMain = new System.Windows.Forms.ToolTip(this.components);
             this.tlpMainContainer = new System.Windows.Forms.TableLayoutPanel();
-            this.btSaveFileChanges = new System.Windows.Forms.Button();
             this.mnuMain.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.tlpIcon.SuspendLayout();
@@ -1076,6 +1081,11 @@
             // 
             // tabContent
             // 
+            this.tabContent.Controls.Add(this.lbHelpLink2);
+            this.tabContent.Controls.Add(this.lbAnd);
+            this.tabContent.Controls.Add(this.lbHelpLink1);
+            this.tabContent.Controls.Add(this.lbForHelp);
+            this.tabContent.Controls.Add(this.btUndoFileChanges);
             this.tabContent.Controls.Add(this.btSaveFileChanges);
             this.tabContent.Controls.Add(this.lbFiles);
             this.tabContent.Controls.Add(this.dgvFiles);
@@ -1086,6 +1096,76 @@
             this.tabContent.TabIndex = 2;
             this.tabContent.Text = "Content / Files";
             this.tabContent.UseVisualStyleBackColor = true;
+            // 
+            // lbHelpLink2
+            // 
+            this.lbHelpLink2.AutoSize = true;
+            this.lbHelpLink2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lbHelpLink2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbHelpLink2.ForeColor = System.Drawing.Color.Blue;
+            this.lbHelpLink2.Location = new System.Drawing.Point(642, 345);
+            this.lbHelpLink2.Name = "lbHelpLink2";
+            this.lbHelpLink2.Size = new System.Drawing.Size(110, 13);
+            this.lbHelpLink2.TabIndex = 7;
+            this.lbHelpLink2.Tag = "https://docs.microsoft.com/en-us/nuget/reference/nuspec#including-content-files";
+            this.lbHelpLink2.Text = "Including content files";
+            this.ttMain.SetToolTip(this.lbHelpLink2, "https://docs.microsoft.com/en-us/nuget/reference/nuspec#including-content-files");
+            this.lbHelpLink2.Click += new System.EventHandler(this.HelpLink_Click);
+            // 
+            // lbAnd
+            // 
+            this.lbAnd.AutoSize = true;
+            this.lbAnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbAnd.Location = new System.Drawing.Point(582, 345);
+            this.lbAnd.Name = "lbAnd";
+            this.lbAnd.Size = new System.Drawing.Size(28, 13);
+            this.lbAnd.TabIndex = 6;
+            this.lbAnd.Text = "and";
+            // 
+            // lbHelpLink1
+            // 
+            this.lbHelpLink1.AutoSize = true;
+            this.lbHelpLink1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lbHelpLink1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbHelpLink1.ForeColor = System.Drawing.Color.Blue;
+            this.lbHelpLink1.Location = new System.Drawing.Point(436, 345);
+            this.lbHelpLink1.Name = "lbHelpLink1";
+            this.lbHelpLink1.Size = new System.Drawing.Size(117, 13);
+            this.lbHelpLink1.TabIndex = 5;
+            this.lbHelpLink1.Tag = "https://docs.microsoft.com/en-us/nuget/reference/nuspec#including-assembly-files";
+            this.lbHelpLink1.Text = "Including assembly files";
+            this.ttMain.SetToolTip(this.lbHelpLink1, "https://docs.microsoft.com/en-us/nuget/reference/nuspec#including-assembly-files");
+            this.lbHelpLink1.Click += new System.EventHandler(this.HelpLink_Click);
+            // 
+            // lbForHelp
+            // 
+            this.lbForHelp.AutoSize = true;
+            this.lbForHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbForHelp.Location = new System.Drawing.Point(338, 345);
+            this.lbForHelp.Name = "lbForHelp";
+            this.lbForHelp.Size = new System.Drawing.Size(81, 13);
+            this.lbForHelp.TabIndex = 4;
+            this.lbForHelp.Text = "For help see:";
+            // 
+            // btUndoFileChanges
+            // 
+            this.btUndoFileChanges.Location = new System.Drawing.Point(172, 340);
+            this.btUndoFileChanges.Name = "btUndoFileChanges";
+            this.btUndoFileChanges.Size = new System.Drawing.Size(160, 23);
+            this.btUndoFileChanges.TabIndex = 3;
+            this.btUndoFileChanges.Text = "Undo file(s) changes";
+            this.btUndoFileChanges.UseVisualStyleBackColor = true;
+            this.btUndoFileChanges.Click += new System.EventHandler(this.btUndoFileChanges_Click);
+            // 
+            // btSaveFileChanges
+            // 
+            this.btSaveFileChanges.Location = new System.Drawing.Point(6, 340);
+            this.btSaveFileChanges.Name = "btSaveFileChanges";
+            this.btSaveFileChanges.Size = new System.Drawing.Size(160, 23);
+            this.btSaveFileChanges.TabIndex = 2;
+            this.btSaveFileChanges.Text = "Save changes";
+            this.btSaveFileChanges.UseVisualStyleBackColor = true;
+            this.btSaveFileChanges.Click += new System.EventHandler(this.btSaveFileChanges_Click);
             // 
             // lbFiles
             // 
@@ -1242,15 +1322,6 @@
             this.tlpMainContainer.Size = new System.Drawing.Size(964, 573);
             this.tlpMainContainer.TabIndex = 4;
             // 
-            // btSaveFileChanges
-            // 
-            this.btSaveFileChanges.Location = new System.Drawing.Point(6, 340);
-            this.btSaveFileChanges.Name = "btSaveFileChanges";
-            this.btSaveFileChanges.Size = new System.Drawing.Size(160, 23);
-            this.btSaveFileChanges.TabIndex = 2;
-            this.btSaveFileChanges.Text = "Save changes";
-            this.btSaveFileChanges.UseVisualStyleBackColor = true;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1404,6 +1475,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colTarget;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colUseContentElement;
         private System.Windows.Forms.Button btSaveFileChanges;
+        private System.Windows.Forms.Button btUndoFileChanges;
+        private System.Windows.Forms.Label lbHelpLink2;
+        private System.Windows.Forms.Label lbAnd;
+        private System.Windows.Forms.Label lbHelpLink1;
+        private System.Windows.Forms.Label lbForHelp;
     }
 }
 

@@ -257,6 +257,8 @@ namespace MakeANuGet
                 dgvFiles.Rows.Clear();
             }
 
+            btSaveFileChanges.Enabled = enabled;
+            btUndoFileChanges.Enabled = enabled;
             mnuFillWithDefaults.Enabled = enabled;
             mnuSaveChanges.Enabled = enabled;
             cbForceNuspec.Enabled = enabled;
@@ -483,6 +485,8 @@ namespace MakeANuGet
                     dgvFiles.Rows[rowIndex].Cells[colFile.Index].Value = dataEntry.SrcAttribute;
                     dgvFiles.Rows[rowIndex].Cells[colTarget.Index].Value = dataEntry.TargetAttribute;
                     dgvFiles.Rows[rowIndex].Cells[colExcludePattern.Index].Value = dataEntry.ExcludeAttribute;
+                    dgvFiles.Rows[rowIndex].Cells[colCopyToOutput.Index].Value = false;
+                    dgvFiles.Rows[rowIndex].Cells[colFlatten.Index].Value = false;
                     dgvFiles.Rows[rowIndex].Cells[colUseContentElement.Index].Value = false;
                 }
 
@@ -498,6 +502,59 @@ namespace MakeANuGet
                     dgvFiles.Rows[rowIndex].Cells[colUseContentElement.Index].Value = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Updates the files defined in the file <see cref="DataGridView"/>.
+        /// </summary>
+        private void UpdateFiles()
+        {
+            bool ValueToBool(object value)
+            {
+                if (value == null)
+                {
+                    return false;
+                }
+
+                if (value is bool boolValue)
+                {
+                    return boolValue;
+                }
+
+                return false;
+            }
+
+            List<NuspecFileContentElement> contentElements = new List<NuspecFileContentElement>();
+            List<NuspecFileElement> fileElements = new List<NuspecFileElement>();
+
+            foreach (DataGridViewRow row in dgvFiles.Rows)
+            {
+                if (row.Cells[colUseContentElement.Index].Value is bool &&
+                    (bool) row.Cells[colUseContentElement.Index].Value)
+                {
+                    contentElements.Add(new NuspecFileContentElement
+                        {
+                            IncludeAttribute = (string) row.Cells[colFile.Index].Value,
+                            ExcludeAttribute = (string) row.Cells[colExcludePattern.Index].Value,
+                            BuildActionAttribute = (string) row.Cells[colBuildAction.Index].Value,
+                            CopyToOutputAttribute = ValueToBool(row.Cells[colCopyToOutput.Index].Value),
+                            FlattenAttribute = ValueToBool(row.Cells[colFlatten.Index].Value),
+                        }
+                    );
+                }
+                else
+                {
+                    fileElements.Add(new NuspecFileElement
+                    {
+                        SrcAttribute = (string) row.Cells[colFile.Index].Value,
+                        TargetAttribute = (string) row.Cells[colTarget.Index].Value,
+                        ExcludeAttribute = (string) row.Cells[colExcludePattern.Index].Value,
+                    });
+                }
+            }
+
+            UpdateContentFilesAndFiles(nuspec, contentElements, fileElements);
+            DisplayXmlData();
         }
         #endregion
 
@@ -864,6 +921,9 @@ namespace MakeANuGet
             // display an open file dialog for the .csproj file..
             if (odCSProj.ShowDialog() == DialogResult.OK)
             {
+                // display the main tab..
+                tcMain.SelectedTab = tabMain;
+
                 // clear the data..
                 SetStepZero();
             
@@ -1266,6 +1326,7 @@ namespace MakeANuGet
                 try
                 {
                     nuspec = XDocument.Parse(scintillaNuspecContents.Text);
+                    SaveXmlData();
                 }
                 catch (Exception ex)
                 {
@@ -1309,6 +1370,30 @@ namespace MakeANuGet
                         e.Cancel = true;
                     }
                 }
+            }
+        }
+
+        private void btUndoFileChanges_Click(object sender, EventArgs e)
+        {
+            DisplayFileElements();
+        }
+
+        private void btSaveFileChanges_Click(object sender, EventArgs e)
+        {
+            UpdateFiles();
+            SaveXmlData();
+        }
+
+        private void HelpLink_Click(object sender, EventArgs e)
+        {
+            var label = (Label) sender;
+            try
+            {
+                Process.Start(label.Tag.ToString());
+            }
+            catch
+            {
+                // ignored..
             }
         }
         #endregion
