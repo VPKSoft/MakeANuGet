@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/VPKSoft/MakeANuGet/tree/master/VPKSoft.MakeANugetTest</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Initial release of this useless package.</releaseNotes>
+    <copyright>Copyright © VPKSoft 2019</copyright>
+    <tags>test void empty useless vpksoft</tags>
+    <icon>nuget-package-logo.png</icon>
+    <license type="expression">MIT</license>
+    <contentFiles>
+      <files include="MakeANugetTest.cs" buildAction="Content" copyToOutput="true" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="NugetIcons\nuget-package-logo.png" target="" />
+  </files>
+</package>
