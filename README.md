@@ -14,4 +14,4 @@ A very simple and limited NuGet creation software.
 * Please do contribute if you wish to add new features - the existing feature set is enough for me.
 
 ## Screenshot
-![Screenshot 1](https://www.vpksoft.net/images/screenshots/MakeANuGet/make_a_nuget_1.png)
+![image](https://user-images.githubusercontent.com/40712699/68545119-9ff6f980-03d2-11ea-8bc4-a5653dd59fdd.png)
