@@ -995,7 +995,17 @@ namespace MakeANuGet
                     binaryPath = Path.Combine(csprojPath, binaryPath, assemblyName + ".dll");
 
                     // load the assembly to get data from it..
-                    assemblyNuget = Assembly.LoadFile(binaryPath);
+                    try
+                    {
+                        assemblyNuget = Assembly.LoadFile(binaryPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($@"Failed to load assembly {binaryPath} with exception '{ex.Message}'.", @"Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                        SetStepZero();
+                        return;
+                    }
 
                     // if the .nuspec already exists, then load it..
                     if (File.Exists(nuspecFile))
