@@ -40,11 +40,16 @@
     <ApplicationIcon>nuget-package-logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ookii.Dialogs.WinForms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=66aa232afad40158, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ookii.Dialogs.WinForms.1.1.0\lib\net45\Ookii.Dialogs.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -80,11 +85,23 @@
     <Compile Include="DialogForms\FormDialogCertificate.Designer.cs">
       <DependentUpon>FormDialogCertificate.cs</DependentUpon>
     </Compile>
+    <Compile Include="DialogForms\FormDialogCommandShell.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogForms\FormDialogCommandShell.Designer.cs">
+      <DependentUpon>FormDialogCommandShell.cs</DependentUpon>
+    </Compile>
     <Compile Include="DialogForms\FormDialogQuerySPDXLicense.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DialogForms\FormDialogQuerySPDXLicense.Designer.cs">
       <DependentUpon>FormDialogQuerySPDXLicense.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogForms\FormDialogRoamSolution.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogForms\FormDialogRoamSolution.Designer.cs">
+      <DependentUpon>FormDialogRoamSolution.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
@@ -105,8 +122,14 @@
     <EmbeddedResource Include="DialogForms\FormDialogCertificate.resx">
       <DependentUpon>FormDialogCertificate.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DialogForms\FormDialogCommandShell.resx">
+      <DependentUpon>FormDialogCommandShell.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DialogForms\FormDialogQuerySPDXLicense.resx">
       <DependentUpon>FormDialogQuerySPDXLicense.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogForms\FormDialogRoamSolution.resx">
+      <DependentUpon>FormDialogRoamSolution.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
@@ -148,6 +171,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\cert.png" />
+    <None Include="Resources\Abort.png" />
     <Content Include="Resources\download_dialog_localization.txt" />
     <None Include="Resources\eye_password_visible.png" />
     <None Include="Resources\eye_password_hidden.png" />

@@ -64,21 +64,24 @@ namespace MakeANuGet
             vmmlPath = Path.Combine(settingsPath, "defaults.vnml");
             vnml.Load(settingsFile);
 
-            apiKey = vnml["api", "key", ""].ToString();
+            ApiKey = vnml["api", "key", ""].ToString();
 
             // ReSharper disable once StringLiteralTypo
-            testApiKey = vnml["apitest", "key", ""].ToString();
+            TestApiKey = vnml["apitest", "key", ""].ToString();
 
-            certificatePassword = vnml["certificate", "password", ""].ToString();
+            GitHubPackagesApiKey = vnml["apiGitHubPackages", "key", ""].ToString();
+            GitHubPackagesUserName = vnml["apiGitHubPackages", "userName", ""].ToString();
 
-            certificateFile = vnml["certificate", "file", ""].ToString();
+            CertificatePassword = vnml["certificate", "password", ""].ToString();
 
-            certificateTimeStampServer = vnml["certificate", "timeStampServer", ""].ToString();
+            CertificateFile = vnml["certificate", "file", ""].ToString();
+
+            CertificateTimeStampServer = vnml["certificate", "timeStampServer", ""].ToString();
 
             signPackage = bool.Parse(vnml["certificate", "use", false].ToString());
 
             // set the API key to the text box..
-            btApiKey.Tag = cbTestNuGet.Checked ? testApiKey : apiKey;
+            btApiKey.Tag = cbTestNuGet.Checked ? TestApiKey : ApiKey;
             btApiKey.Text = bool.Parse(pnToggleApiKeyVisible.Tag.ToString())
                 ? btApiKey.Tag.ToString()
                 : new string('•', btApiKey.Tag.ToString().Length);
@@ -130,24 +133,30 @@ namespace MakeANuGet
         private Assembly assemblyNuget;
 
         // your nuget.org API key
-        private string apiKey;
+        internal static string ApiKey;
 
         // ReSharper disable twice CommentTypo
         // your apiint.nugettest.org API key
-        private string testApiKey;
+        internal static string TestApiKey;
+
+        // your API key for the GitHub packages..
+        internal static string GitHubPackagesApiKey;
+
+        // your user name for the GitHub packages..
+        internal static string GitHubPackagesUserName;
 
         // a path to the common settings .vnml file..
         // ReSharper disable once IdentifierTypo
         private readonly string vmmlPath;
 
         // a password for a certificate file to sign the nuget package..
-        private string certificatePassword;
+        internal static string CertificatePassword;
 
         // an URL for the certificate time stamp server..
-        private string certificateTimeStampServer;
+        internal static string CertificateTimeStampServer;
 
         // the certificate file to be used for signing the nuget package..
-        private string certificateFile;
+        internal static string CertificateFile;
 
         // a value indicating whether to sign the nuget package with a certificate
         private bool signPackage;
@@ -704,7 +713,7 @@ namespace MakeANuGet
 
             // the output from the nuget.exe is piped to the lower black text box..
             // ReSharper disable once StringLiteralTypo
-            tbProcessOutput.AppendText("> " + processPath + $" sign \"{package}\" -CertificatePath \"{certificateFile}\" -Timestamper {certificateTimeStampServer} -CertificatePassword \"{new string('•', certificatePassword.Length)}\" " + Environment.NewLine);
+            tbProcessOutput.AppendText("> " + processPath + $" sign \"{package}\" -CertificatePath \"{CertificateFile}\" -Timestamper {CertificateTimeStampServer} -CertificatePassword \"{new string('•', CertificatePassword.Length)}\" " + Environment.NewLine);
 
             // create a process..
             Process process = new Process
@@ -713,7 +722,7 @@ namespace MakeANuGet
                 {
                     FileName = processPath,
                     Arguments =
-                        $"sign \"{package}\" -CertificatePath \"{certificateFile}\" -Timestamper {certificateTimeStampServer} -CertificatePassword \"{certificatePassword}\"",
+                        $"sign \"{package}\" -CertificatePath \"{CertificateFile}\" -Timestamper {CertificateTimeStampServer} -CertificatePassword \"{CertificatePassword}\"",
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     WorkingDirectory = csprojPath,
@@ -1033,15 +1042,18 @@ namespace MakeANuGet
         // are presumed to be constant for the developer..
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            vnml["api", "key"] = apiKey; // the NuGet API key..
+            vnml["api", "key"] = ApiKey; // the NuGet API key..
             // ReSharper disable once StringLiteralTypo
-            vnml["apitest", "key"] = testApiKey; // the test NuGet API key..
+            vnml["apitest", "key"] = TestApiKey; // the test NuGet API key..
 
             // the certificate settings..
-            vnml["certificate", "password"] = certificatePassword;
-            vnml["certificate", "file"] = certificateFile;
-            vnml["certificate", "timeStampServer"] = certificateTimeStampServer;
+            vnml["certificate", "password"] = CertificatePassword;
+            vnml["certificate", "file"] = CertificateFile;
+            vnml["certificate", "timeStampServer"] = CertificateTimeStampServer;
             vnml["certificate", "use"] = signPackage;
+
+            vnml["apiGitHubPackages", "key"] = GitHubPackagesApiKey;
+            vnml["apiGitHubPackages", "userName"] = GitHubPackagesUserName;
 
             vnml.Save(settingsFile);
 
@@ -1213,14 +1225,14 @@ namespace MakeANuGet
         // a user wishes to enter the NuGet API keys..
         private void mnuEnterAPIKeys_Click(object sender, EventArgs e)
         {
-            FormDialogApiKeys.Execute(ref apiKey, ref testApiKey);
+            FormDialogApiKeys.Execute(ref ApiKey, ref TestApiKey, ref GitHubPackagesApiKey, ref GitHubPackagesUserName);
         }
 
         // a user toggles the test NuGet check box..
         private void cbTestNuGet_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
-            btApiKey.Tag = checkBox.Checked ? testApiKey : apiKey;
+            btApiKey.Tag = checkBox.Checked ? TestApiKey : ApiKey;
             btApiKey.Text = bool.Parse(pnToggleApiKeyVisible.Tag.ToString())
                 ? btApiKey.Tag.ToString()
                 : new string('•', btApiKey.Tag.ToString().Length);
@@ -1239,8 +1251,8 @@ namespace MakeANuGet
         // shows the detail dialog for the code signing certificate settings..
         private void MnuCertificateSettings_Click(object sender, EventArgs e)
         {
-            new FormDialogCertificate().ShowDialog(ref certificatePassword, ref certificateTimeStampServer,
-                ref certificateFile);
+            new FormDialogCertificate().ShowDialog(ref CertificatePassword, ref CertificateTimeStampServer,
+                ref CertificateFile);
         }
 
         // the user wishes to change, add or update the certificate settings..
@@ -1250,14 +1262,14 @@ namespace MakeANuGet
 
             if (checkBox.Checked)
             {
-                if (certificatePassword == string.Empty || certificateFile == string.Empty ||
-                    certificateTimeStampServer == string.Empty)
+                if (CertificatePassword == string.Empty || CertificateFile == string.Empty ||
+                    CertificateTimeStampServer == string.Empty)
                 {
-                    new FormDialogCertificate().ShowDialog(ref certificatePassword, ref certificateTimeStampServer,
-                        ref certificateFile);
+                    new FormDialogCertificate().ShowDialog(ref CertificatePassword, ref CertificateTimeStampServer,
+                        ref CertificateFile);
 
-                    if (certificatePassword == string.Empty || certificateFile == string.Empty ||
-                        certificateTimeStampServer == string.Empty)
+                    if (CertificatePassword == string.Empty || CertificateFile == string.Empty ||
+                        CertificateTimeStampServer == string.Empty)
                     {
                         checkBox.Checked = false;
                     }
@@ -1407,5 +1419,15 @@ namespace MakeANuGet
             }
         }
         #endregion
+
+        private void mnuBatchEnumeratePackages_Click(object sender, EventArgs e)
+        {
+            if (fbdFolder.ShowDialog() == DialogResult.OK)
+            {
+                var files = FileEnumerator.RecurseFiles(fbdFolder.SelectedPath, "*.nupkg");
+                files = files.Where(f => f.PathFull.IndexOf("debug", StringComparison.InvariantCultureIgnoreCase) == -1);
+                FormDialogRoamSolution.ShowDialog(this, files);
+            }
+        }
     }
 }

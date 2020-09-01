@@ -26,6 +26,7 @@ SOFTWARE.
 
 using System;
 using System.Windows.Forms;
+using VPKSoft.Utils;
 
 namespace MakeANuGet.DialogForms
 {
@@ -48,12 +49,17 @@ namespace MakeANuGet.DialogForms
         /// </summary>
         /// <param name="apiKey">The API key.</param>
         /// <param name="apiTestKey">The API test key.</param>
-        public static void Execute(ref string apiKey, ref string apiTestKey)
+        /// <param name="gitHubPackagesApiKey">The API key for the GitHub packages.</param>
+        /// <param name="gitHubPackagesUserName">The user name for the GitHub packages.</param>
+        public static void Execute(ref string apiKey, ref string apiTestKey, ref string gitHubPackagesApiKey, ref string gitHubPackagesUserName)
         {
             // create an instance of this class..
             FormDialogApiKeys formDialogApiKeys = new FormDialogApiKeys
             {
-                tbNuGetAPIKey = {Text = apiKey}, tbTestNuGetAPIKey = {Text = apiTestKey}
+                tbNuGetAPIKey = {Text = apiKey}, 
+                tbTestNuGetAPIKey = {Text = apiTestKey}, 
+                tbGitHubPackagesUserName = {Text = gitHubPackagesUserName}, 
+                tbGitHubPackagesApiKey = {Text = gitHubPackagesApiKey},
             };
 
             // set the API keys..
@@ -63,6 +69,8 @@ namespace MakeANuGet.DialogForms
             {
                 apiKey = formDialogApiKeys.tbNuGetAPIKey.Text;
                 apiTestKey = formDialogApiKeys.tbTestNuGetAPIKey.Text;
+                gitHubPackagesApiKey = formDialogApiKeys.tbGitHubPackagesApiKey.Text;
+                gitHubPackagesUserName = formDialogApiKeys.tbGitHubPackagesUserName.Text;
             }
         }
 
@@ -77,6 +85,13 @@ namespace MakeANuGet.DialogForms
         {
             LinkLabel linkLabel = (LinkLabel)sender;
             System.Diagnostics.Process.Start(linkLabel.Text);
+        }
+
+        private void btSetApiKey_Click(object sender, EventArgs e)
+        {
+            FormDialogCommandShell.ExecuteCommand(this, Paths.AppInstallDir, Paths.AppInstallDir, "nuget.exe",
+                new CommandArgument("setapikey", tbGitHubPackagesApiKey.Text, true),
+                new CommandArgument("-source", "https://nuget.pkg.github.com/" + tbGitHubPackagesUserName.Text + "/index.json"));
         }
     }
 }
