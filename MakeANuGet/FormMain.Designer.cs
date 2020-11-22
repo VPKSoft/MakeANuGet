@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,6 +42,7 @@
             this.mnuEnterAPIKeys = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCertificateSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTest = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuBatchEnumeratePackages = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.odCSProj = new System.Windows.Forms.OpenFileDialog();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
@@ -81,7 +82,11 @@
             this.tlpApiKey = new System.Windows.Forms.TableLayoutPanel();
             this.btApiKey = new System.Windows.Forms.Button();
             this.lbApiKey = new System.Windows.Forms.Label();
+            this.pnToggleApiKeyVisible = new System.Windows.Forms.Panel();
             this.tlpNuGetSteps = new System.Windows.Forms.TableLayoutPanel();
+            this.pnNO1 = new System.Windows.Forms.Panel();
+            this.pnNO2 = new System.Windows.Forms.Panel();
+            this.pnNO3 = new System.Windows.Forms.Panel();
             this.btGenerateNuget = new System.Windows.Forms.Button();
             this.btGenerateNugetPackage = new System.Windows.Forms.Button();
             this.btPushNugetPackage = new System.Windows.Forms.Button();
@@ -126,12 +131,8 @@
             this.odIconFile = new System.Windows.Forms.OpenFileDialog();
             this.ttMain = new System.Windows.Forms.ToolTip(this.components);
             this.tlpMainContainer = new System.Windows.Forms.TableLayoutPanel();
-            this.pnToggleApiKeyVisible = new System.Windows.Forms.Panel();
-            this.pnNO1 = new System.Windows.Forms.Panel();
-            this.pnNO2 = new System.Windows.Forms.Panel();
-            this.pnNO3 = new System.Windows.Forms.Panel();
-            this.mnuBatchEnumeratePackages = new System.Windows.Forms.ToolStripMenuItem();
             this.fbdFolder = new Ookii.Dialogs.WinForms.VistaFolderBrowserDialog();
+            this.odNugetConfig = new System.Windows.Forms.OpenFileDialog();
             this.mnuMain.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.tlpIcon.SuspendLayout();
@@ -234,6 +235,13 @@
             this.mnuTest.Size = new System.Drawing.Size(204, 22);
             this.mnuTest.Text = "Test";
             this.mnuTest.Click += new System.EventHandler(this.mnuTest_Click);
+            // 
+            // mnuBatchEnumeratePackages
+            // 
+            this.mnuBatchEnumeratePackages.Name = "mnuBatchEnumeratePackages";
+            this.mnuBatchEnumeratePackages.Size = new System.Drawing.Size(204, 22);
+            this.mnuBatchEnumeratePackages.Text = "Batch handle packages...";
+            this.mnuBatchEnumeratePackages.Click += new System.EventHandler(this.mnuBatchEnumeratePackages_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -746,6 +754,19 @@
             this.lbApiKey.Text = "API key:";
             this.lbApiKey.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // pnToggleApiKeyVisible
+            // 
+            this.pnToggleApiKeyVisible.BackgroundImage = global::MakeANuGet.Properties.Resources.eye_password_hidden;
+            this.pnToggleApiKeyVisible.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pnToggleApiKeyVisible.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnToggleApiKeyVisible.Location = new System.Drawing.Point(890, 0);
+            this.pnToggleApiKeyVisible.Margin = new System.Windows.Forms.Padding(0);
+            this.pnToggleApiKeyVisible.Name = "pnToggleApiKeyVisible";
+            this.pnToggleApiKeyVisible.Size = new System.Drawing.Size(48, 29);
+            this.pnToggleApiKeyVisible.TabIndex = 4;
+            this.pnToggleApiKeyVisible.Tag = "false";
+            this.pnToggleApiKeyVisible.Click += new System.EventHandler(this.pnToggleApiKeyVisible_Click);
+            // 
             // tlpNuGetSteps
             // 
             this.tlpNuGetSteps.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -776,6 +797,33 @@
             this.tlpNuGetSteps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpNuGetSteps.Size = new System.Drawing.Size(938, 36);
             this.tlpNuGetSteps.TabIndex = 2;
+            // 
+            // pnNO1
+            // 
+            this.pnNO1.BackgroundImage = global::MakeANuGet.Properties.Resources.no_1;
+            this.pnNO1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pnNO1.Location = new System.Drawing.Point(3, 3);
+            this.pnNO1.Name = "pnNO1";
+            this.pnNO1.Size = new System.Drawing.Size(30, 30);
+            this.pnNO1.TabIndex = 0;
+            // 
+            // pnNO2
+            // 
+            this.pnNO2.BackgroundImage = global::MakeANuGet.Properties.Resources.no_2;
+            this.pnNO2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pnNO2.Location = new System.Drawing.Point(172, 3);
+            this.pnNO2.Name = "pnNO2";
+            this.pnNO2.Size = new System.Drawing.Size(30, 30);
+            this.pnNO2.TabIndex = 1;
+            // 
+            // pnNO3
+            // 
+            this.pnNO3.BackgroundImage = global::MakeANuGet.Properties.Resources.no_3;
+            this.pnNO3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pnNO3.Location = new System.Drawing.Point(405, 3);
+            this.pnNO3.Name = "pnNO3";
+            this.pnNO3.Size = new System.Drawing.Size(30, 30);
+            this.pnNO3.TabIndex = 2;
             // 
             // btGenerateNuget
             // 
@@ -1156,8 +1204,8 @@
             this.colUseContentElement});
             this.dgvFiles.Location = new System.Drawing.Point(6, 19);
             this.dgvFiles.Name = "dgvFiles";
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvFiles.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvFiles.RowsDefaultCellStyle = dataGridViewCellStyle12;
             this.dgvFiles.Size = new System.Drawing.Size(938, 315);
             this.dgvFiles.TabIndex = 0;
             this.dgvFiles.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvFiles_CellBeginEdit);
@@ -1171,9 +1219,9 @@
             // 
             // colSelectFile
             // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.NullValue = "...";
-            this.colSelectFile.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle10.NullValue = "...";
+            this.colSelectFile.DefaultCellStyle = dataGridViewCellStyle10;
             this.colSelectFile.HeaderText = "...";
             this.colSelectFile.Name = "colSelectFile";
             this.colSelectFile.Width = 30;
@@ -1185,8 +1233,8 @@
             // 
             // colBuildAction
             // 
-            dataGridViewCellStyle2.NullValue = "None";
-            this.colBuildAction.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle11.NullValue = "None";
+            this.colBuildAction.DefaultCellStyle = dataGridViewCellStyle11;
             this.colBuildAction.HeaderText = "Build action";
             this.colBuildAction.Items.AddRange(new object[] {
             "None",
@@ -1285,58 +1333,17 @@
             this.tlpMainContainer.Size = new System.Drawing.Size(964, 573);
             this.tlpMainContainer.TabIndex = 4;
             // 
-            // pnToggleApiKeyVisible
-            // 
-            this.pnToggleApiKeyVisible.BackgroundImage = global::MakeANuGet.Properties.Resources.eye_password_hidden;
-            this.pnToggleApiKeyVisible.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.pnToggleApiKeyVisible.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnToggleApiKeyVisible.Location = new System.Drawing.Point(890, 0);
-            this.pnToggleApiKeyVisible.Margin = new System.Windows.Forms.Padding(0);
-            this.pnToggleApiKeyVisible.Name = "pnToggleApiKeyVisible";
-            this.pnToggleApiKeyVisible.Size = new System.Drawing.Size(48, 29);
-            this.pnToggleApiKeyVisible.TabIndex = 4;
-            this.pnToggleApiKeyVisible.Tag = "false";
-            this.pnToggleApiKeyVisible.Click += new System.EventHandler(this.pnToggleApiKeyVisible_Click);
-            // 
-            // pnNO1
-            // 
-            this.pnNO1.BackgroundImage = global::MakeANuGet.Properties.Resources.no_1;
-            this.pnNO1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pnNO1.Location = new System.Drawing.Point(3, 3);
-            this.pnNO1.Name = "pnNO1";
-            this.pnNO1.Size = new System.Drawing.Size(30, 30);
-            this.pnNO1.TabIndex = 0;
-            // 
-            // pnNO2
-            // 
-            this.pnNO2.BackgroundImage = global::MakeANuGet.Properties.Resources.no_2;
-            this.pnNO2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pnNO2.Location = new System.Drawing.Point(172, 3);
-            this.pnNO2.Name = "pnNO2";
-            this.pnNO2.Size = new System.Drawing.Size(30, 30);
-            this.pnNO2.TabIndex = 1;
-            // 
-            // pnNO3
-            // 
-            this.pnNO3.BackgroundImage = global::MakeANuGet.Properties.Resources.no_3;
-            this.pnNO3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pnNO3.Location = new System.Drawing.Point(405, 3);
-            this.pnNO3.Name = "pnNO3";
-            this.pnNO3.Size = new System.Drawing.Size(30, 30);
-            this.pnNO3.TabIndex = 2;
-            // 
-            // mnuBatchEnumeratePackages
-            // 
-            this.mnuBatchEnumeratePackages.Name = "mnuBatchEnumeratePackages";
-            this.mnuBatchEnumeratePackages.Size = new System.Drawing.Size(204, 22);
-            this.mnuBatchEnumeratePackages.Text = "Batch handle packages...";
-            this.mnuBatchEnumeratePackages.Click += new System.EventHandler(this.mnuBatchEnumeratePackages_Click);
-            // 
             // fbdFolder
             // 
             this.fbdFolder.Description = "Select project folder";
             this.fbdFolder.ShowNewFolderButton = false;
             this.fbdFolder.UseDescriptionForTitle = true;
+            // 
+            // odNugetConfig
+            // 
+            this.odNugetConfig.FileName = "nuget.config";
+            this.odNugetConfig.Filter = "NuGet config|nuget.config";
+            this.odNugetConfig.Title = "Please provide the nuget.config file for GitHub packages";
             // 
             // FormMain
             // 
@@ -1498,6 +1505,7 @@
         private System.Windows.Forms.Label lbForHelp;
         private System.Windows.Forms.ToolStripMenuItem mnuBatchEnumeratePackages;
         private Ookii.Dialogs.WinForms.VistaFolderBrowserDialog fbdFolder;
+        private System.Windows.Forms.OpenFileDialog odNugetConfig;
     }
 }
 

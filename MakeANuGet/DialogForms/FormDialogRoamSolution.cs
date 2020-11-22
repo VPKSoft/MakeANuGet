@@ -27,19 +27,26 @@ namespace MakeANuGet.DialogForms
         /// </summary>
         /// <param name="owner">The owner.</param>
         /// <param name="files">The files.</param>
-        public static void ShowDialog(IWin32Window owner, IEnumerable<FileEnumeratorFileEntry> files)
+        /// <param name="nugetConfigFile">The nuget.config file name.</param>
+        public static void ShowDialog(IWin32Window owner, IEnumerable<FileEnumeratorFileEntry> files, string nugetConfigFile)
         {
             if (files != null)
             {
                 var fileList = files.ToList();
                 if (fileList.Any())
                 {
-                    var form = new FormDialogRoamSolution();
+                    var form = new FormDialogRoamSolution
+                    {
+                        nugetConfigFile = nugetConfigFile, fileExists = File.Exists(nugetConfigFile)
+                    };
                     form.ListFiles(fileList);
                     form.ShowDialog(owner);
                 }
             }
         }
+
+        private string nugetConfigFile;
+        private bool fileExists;
 
         private void ListFiles(List<FileEnumeratorFileEntry> files)
         {
@@ -51,13 +58,14 @@ namespace MakeANuGet.DialogForms
                     continue;
                 }
 
-                dgvPackages.Rows.Add(file.FileName, true, true, true, true, true, false, file.FileNameWithPath);
+                dgvPackages.Rows.Add(file.FileName, true, true, true, fileExists, true, false, file.FileNameWithPath);
             }
             SuspendCellChanged = false;
         }
 
         private void FormDialogRoamSolution_Shown(object sender, EventArgs e)
         {
+            colGitHubPackages.ReadOnly = !File.Exists(nugetConfigFile);
         }
 
         private bool SuspendCellChanged { get; set; }
@@ -72,7 +80,12 @@ namespace MakeANuGet.DialogForms
 
             if (e.ColumnIndex == colSelectAll.Index)
             {
-                grid.Rows[e.RowIndex].Cells[colGitHubPackages.Index].Value = grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                if (fileExists)
+                {
+                    grid.Rows[e.RowIndex].Cells[colGitHubPackages.Index].Value =
+                        grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                }
+
                 grid.Rows[e.RowIndex].Cells[colPusNuGetTestOrg.Index].Value = grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
                 grid.Rows[e.RowIndex].Cells[colPushNugetOrg.Index].Value = grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
                 grid.Rows[e.RowIndex].Cells[colSignPackage.Index].Value = grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
@@ -209,7 +222,8 @@ namespace MakeANuGet.DialogForms
 
                 if ((bool)grid.Rows[i].Cells[colGitHubPackages.Index].Value)
                 {
-                    CommandData.Add((workingDirectory, Paths.AppInstallDir, "nuget.exe",
+                    var configPath = Path.GetDirectoryName(nugetConfigFile);
+                    CommandData.Add((configPath, Paths.AppInstallDir, "nuget.exe",
                         new[]
                         {
                             new CommandArgument("push", grid.Rows[i].Cells[colFileNameFull.Index].Value.ToString()),
@@ -225,6 +239,15 @@ namespace MakeANuGet.DialogForms
                 CommandIndex = 1;
                 FormDialogCommandShell.ExecuteCommand(this, CommandData[0].workingDirectory, CommandData[0].path,
                     CommandData[0].command, RequestNewCommand, CommandData[0].commandArguments);
+            }
+        }
+
+        private void dgvPackages_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == colGitHubPackages.Index && !fileExists)
+            {
+                MessageBox.Show(@"The nuget.config file is missing from the directory tree. Please provide one.",
+                    @"NuGet config missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

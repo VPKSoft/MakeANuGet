@@ -66,6 +66,7 @@
             this.dgvPackages.ShowEditingIcon = false;
             this.dgvPackages.Size = new System.Drawing.Size(804, 397);
             this.dgvPackages.TabIndex = 0;
+            this.dgvPackages.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPackages_CellClick);
             this.dgvPackages.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPackages_CellContentClick);
             this.dgvPackages.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPackages_CellContentClick);
             this.dgvPackages.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPackages_CellValueChanged);

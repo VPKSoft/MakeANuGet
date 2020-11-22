@@ -24,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>bin\Debug\MakeANuGet.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +36,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>bin\Release\MakeANuGet.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>nuget-package-logo.ico</ApplicationIcon>
@@ -116,6 +118,7 @@
     <Compile Include="HelperClasses\RelativePath.cs" />
     <Compile Include="HelperClasses\SPDXLicenseCollection.cs" />
     <Compile Include="HelperClasses\XmlUtilities.cs" />
+    <Compile Include="WaitForProcess.cs" />
     <EmbeddedResource Include="DialogForms\FormDialogAPIKeys.resx">
       <DependentUpon>FormDialogAPIKeys.cs</DependentUpon>
     </EmbeddedResource>

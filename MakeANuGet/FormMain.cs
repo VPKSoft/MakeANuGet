@@ -2,7 +2,7 @@
 /*
 MIT License
 
-Copyright(c) 2019 Petteri Kautonen
+Copyright(c) 2020 Petteri Kautonen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -1425,8 +1425,21 @@ namespace MakeANuGet
             if (fbdFolder.ShowDialog() == DialogResult.OK)
             {
                 var files = FileEnumerator.RecurseFiles(fbdFolder.SelectedPath, "*.nupkg");
+                var nugetConfigFile = FileEnumerator
+                    .RecurseFiles(fbdFolder.SelectedPath, "*.config*").FirstOrDefault(f => f.FileName == "nuget.config");
                 files = files.Where(f => f.PathFull.IndexOf("debug", StringComparison.InvariantCultureIgnoreCase) == -1);
-                FormDialogRoamSolution.ShowDialog(this, files);
+
+                string nugetConfigFileName = nugetConfigFile?.FileNameWithPath;
+
+                if (!File.Exists(nugetConfigFileName))
+                {
+                    if (odNugetConfig.ShowDialog() == DialogResult.OK)
+                    {
+                        nugetConfigFileName = odNugetConfig.FileName;
+                    }
+                }
+
+                FormDialogRoamSolution.ShowDialog(this, files, nugetConfigFileName);
             }
         }
     }

@@ -35,8 +35,10 @@ namespace MakeANuGet
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
+            WaitForProcess.WaitForProcessArguments(args, 30);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FormMain());
