@@ -93,6 +93,12 @@
     <Compile Include="DialogForms\FormDialogCommandShell.Designer.cs">
       <DependentUpon>FormDialogCommandShell.cs</DependentUpon>
     </Compile>
+    <Compile Include="DialogForms\FormDialogQueryDescription.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogForms\FormDialogQueryDescription.Designer.cs">
+      <DependentUpon>FormDialogQueryDescription.cs</DependentUpon>
+    </Compile>
     <Compile Include="DialogForms\FormDialogQuerySPDXLicense.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +133,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DialogForms\FormDialogCommandShell.resx">
       <DependentUpon>FormDialogCommandShell.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogForms\FormDialogQueryDescription.resx">
+      <DependentUpon>FormDialogQueryDescription.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DialogForms\FormDialogQuerySPDXLicense.resx">
       <DependentUpon>FormDialogQuerySPDXLicense.cs</DependentUpon>
@@ -179,6 +188,9 @@
     <None Include="Resources\eye_password_visible.png" />
     <None Include="Resources\eye_password_hidden.png" />
     <Content Include="setup_version_maintenance.exe" />
+    <Content Include="signtool.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="VPKSoft.ico" />
   </ItemGroup>
   <ItemGroup />

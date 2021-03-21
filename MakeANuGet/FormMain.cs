@@ -34,6 +34,8 @@ using VPKSoft.Utils;
 using System.Diagnostics;
 using System.Threading;
 using System.Reflection;
+using System.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 using MakeANuGet.DialogForms;
 using MakeANuGet.HelperClasses;
@@ -1440,6 +1442,39 @@ namespace MakeANuGet
                 }
 
                 FormDialogRoamSolution.ShowDialog(this, files, nugetConfigFileName);
+            }
+        }
+
+        private void mnuSignMsi_Click(object sender, EventArgs e)
+        {
+            if (odMsi.ShowDialog() == DialogResult.OK)
+            {
+                var description = FormDialogQueryDescription.ShowDialog();
+                if (description == null)
+                {
+                    return;
+                }
+
+                // make a secure string password..
+                using var password = new SecureString();
+                foreach (var c in CertificatePassword)
+                {
+                    password.AppendChar(c);
+                }
+
+                // open the certificate to get the thumbprint for it..
+                using var cert = new X509Certificate2(File.ReadAllBytes(CertificateFile), password);
+
+                // run the signtool utility..
+                FormDialogCommandShell.ExecuteCommand(this, Paths.AppInstallDir, Paths.AppInstallDir, "signtool.exe",
+                    new CommandArgument("sign"),
+                    new CommandArgument("/f", CertificateFile, true) {QuoteValue = true},
+                    new CommandArgument("/d", description) {QuoteValue = true},
+                    new CommandArgument("/p", CertificatePassword, true) {QuoteValue = true},
+                    new CommandArgument("/v"),
+                    new CommandArgument("/sha1", cert.Thumbprint),
+                    new CommandArgument("/t", CertificateTimeStampServer),
+                    new CommandArgument(null, odMsi.FileName));
             }
         }
     }

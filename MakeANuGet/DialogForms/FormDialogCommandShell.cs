@@ -326,6 +326,14 @@ namespace MakeANuGet.DialogForms
             QuoteValue = quoteValue;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandArgument"/> class.
+        /// </summary>
+        /// <param name="argument">The argument.</param>
+        public CommandArgument(string argument)
+        {
+            Argument = argument;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandArgument"/> class.
@@ -397,7 +405,7 @@ namespace MakeANuGet.DialogForms
         /// <summary>
         /// Gets the <see cref="ArgumentValue"/> either hidden if the <see cref="HideFromDisplay"/> is <c>true</c>; otherwise the  the <see cref="ArgumentValue"/> is returned.
         /// </summary>
-        public string HiddenArgumentValue => HideFromDisplay ? new string('•', ArgumentValue.Length) : ArgumentValue;
+        public string HiddenArgumentValue => HideFromDisplay ? string.IsNullOrEmpty(ArgumentValue) ? "" : new string('•', ArgumentValue.Length) : ArgumentValue;
 
         /// <summary>
         /// Gets or sets the value whether the argument should not be shown on the screen (hidden).
@@ -420,7 +428,10 @@ namespace MakeANuGet.DialogForms
                 return Argument;
             }
 
-            return Argument + ArgumentValueSeparator + (QuoteValue ? "\"" : string.Empty) + ArgumentValue + (QuoteValue ? "\"" : string.Empty);
+            return Argument + (string.IsNullOrEmpty(ArgumentValue)
+                ? string.Empty
+                : (ArgumentValueSeparator + (QuoteValue ? "\"" : string.Empty) + ArgumentValue +
+                   (QuoteValue ? "\"" : string.Empty)));
         }
 
         /// <summary>

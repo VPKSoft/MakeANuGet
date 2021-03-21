@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -133,6 +133,8 @@
             this.tlpMainContainer = new System.Windows.Forms.TableLayoutPanel();
             this.fbdFolder = new Ookii.Dialogs.WinForms.VistaFolderBrowserDialog();
             this.odNugetConfig = new System.Windows.Forms.OpenFileDialog();
+            this.mnuSignMsi = new System.Windows.Forms.ToolStripMenuItem();
+            this.odMsi = new System.Windows.Forms.OpenFileDialog();
             this.mnuMain.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.tlpIcon.SuspendLayout();
@@ -180,7 +182,8 @@
             this.mnuEnterAPIKeys,
             this.mnuCertificateSettings,
             this.mnuTest,
-            this.mnuBatchEnumeratePackages});
+            this.mnuBatchEnumeratePackages,
+            this.mnuSignMsi});
             this.mnuFile.Name = "mnuFile";
             this.mnuFile.Size = new System.Drawing.Size(37, 20);
             this.mnuFile.Text = "File";
@@ -1204,8 +1207,8 @@
             this.colUseContentElement});
             this.dgvFiles.Location = new System.Drawing.Point(6, 19);
             this.dgvFiles.Name = "dgvFiles";
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvFiles.RowsDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvFiles.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvFiles.Size = new System.Drawing.Size(938, 315);
             this.dgvFiles.TabIndex = 0;
             this.dgvFiles.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvFiles_CellBeginEdit);
@@ -1219,9 +1222,9 @@
             // 
             // colSelectFile
             // 
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle10.NullValue = "...";
-            this.colSelectFile.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.NullValue = "...";
+            this.colSelectFile.DefaultCellStyle = dataGridViewCellStyle1;
             this.colSelectFile.HeaderText = "...";
             this.colSelectFile.Name = "colSelectFile";
             this.colSelectFile.Width = 30;
@@ -1233,8 +1236,8 @@
             // 
             // colBuildAction
             // 
-            dataGridViewCellStyle11.NullValue = "None";
-            this.colBuildAction.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle2.NullValue = "None";
+            this.colBuildAction.DefaultCellStyle = dataGridViewCellStyle2;
             this.colBuildAction.HeaderText = "Build action";
             this.colBuildAction.Items.AddRange(new object[] {
             "None",
@@ -1344,6 +1347,17 @@
             this.odNugetConfig.FileName = "nuget.config";
             this.odNugetConfig.Filter = "NuGet config|nuget.config";
             this.odNugetConfig.Title = "Please provide the nuget.config file for GitHub packages";
+            // 
+            // mnuSignMsi
+            // 
+            this.mnuSignMsi.Name = "mnuSignMsi";
+            this.mnuSignMsi.Size = new System.Drawing.Size(204, 22);
+            this.mnuSignMsi.Text = "Sign MSI";
+            this.mnuSignMsi.Click += new System.EventHandler(this.mnuSignMsi_Click);
+            // 
+            // odMsi
+            // 
+            this.odMsi.Filter = "MSI Installer files|*.msi";
             // 
             // FormMain
             // 
@@ -1506,6 +1520,8 @@
         private System.Windows.Forms.ToolStripMenuItem mnuBatchEnumeratePackages;
         private Ookii.Dialogs.WinForms.VistaFolderBrowserDialog fbdFolder;
         private System.Windows.Forms.OpenFileDialog odNugetConfig;
+        private System.Windows.Forms.ToolStripMenuItem mnuSignMsi;
+        private System.Windows.Forms.OpenFileDialog odMsi;
     }
 }
 
